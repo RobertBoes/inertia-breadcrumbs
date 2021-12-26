@@ -22,7 +22,7 @@ class InstallLaravelBreadcrumbs implements RunnableSolution
     public function getDocumentationLinks(): array
     {
         return [
-            'Creating a custom breadcrumbs provider' => 'https://github.com/RobertBoes/inertia-breadcrumbs'
+            'Creating a custom breadcrumbs provider' => 'https://github.com/RobertBoes/inertia-breadcrumbs',
         ];
     }
 
@@ -60,12 +60,12 @@ class InstallLaravelBreadcrumbs implements RunnableSolution
      *
      */
     public function getRunParameters(): array
-    {   
+    {
         return [];
     }
 
     private function phpBinary(): string
     {
-        return (new PhpExecutableFinder)->find();
+        return (new PhpExecutableFinder())->find();
     }
 }
