@@ -12,7 +12,8 @@ it('adds middleware to web group', function () {
         ]);
 });
 
-function usesCustomMiddlewareGroup($app) {
+function usesCustomMiddlewareGroup($app)
+{
     $app->config->set('inertia-breadcrumbs.middleware.group', 'sqlite');
 }
 

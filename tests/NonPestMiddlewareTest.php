@@ -26,7 +26,7 @@ class NonPestMiddlewareTest extends TestCase
      */
     public function defineRoutes($router)
     {
-        $router->get('/home', function() {
+        $router->get('/home', function () {
             return Inertia::render('Home', []);
         })->name('home');
     }
@@ -41,7 +41,7 @@ class NonPestMiddlewareTest extends TestCase
             [
                 'web' => [
                     Middleware::class,
-                ]
+                ],
             ]
         );
     }
@@ -57,7 +57,7 @@ class NonPestMiddlewareTest extends TestCase
             [
                 'custom' => [
                     Middleware::class,
-                ]
+                ],
             ]
         );
     }
@@ -81,7 +81,8 @@ class NonPestMiddlewareTest extends TestCase
         });
 
         $this->get('/home')
-            ->assertInertia(fn (Assert $page) => $page
+            ->assertInertia(
+                fn (Assert $page) => $page
                 ->component('Home')
             );
     }
