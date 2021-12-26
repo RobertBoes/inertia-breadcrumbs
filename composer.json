@@ -1,26 +1,31 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "robertboes/inertia-breadcrumbs",
+    "description": "Laravel package to automatically generates breadcrumbs for your Inertia app",
     "keywords": [
-        ":vendor_name",
+        "RobertBoes",
         "laravel",
-        ":package_slug"
+        "inertia-breadcrumbs"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/robertboes/inertia-breadcrumbs",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Robert Boes",
+            "email": "github@robertboes.nl",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.0",
+        "facade/ignition-contracts": "^1.0",
+        "illuminate/contracts": "^8.37",
+        "inertiajs/inertia-laravel": "^0.4.5",
         "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "^8.37"
+        "symfony/process": "^5.4"
     },
     "require-dev": {
+        "composer/composer": "^2.1",
+        "diglactic/laravel-breadcrumbs": "^7.0",
         "nunomaduro/collision": "^5.10",
         "nunomaduro/larastan": "^1.0",
         "orchestra/testbench": "^6.22",
@@ -32,15 +37,17 @@
         "phpunit/phpunit": "^9.4",
         "spatie/laravel-ray": "^1.26"
     },
+    "suggest": {
+        "diglactic/laravel-breadcrumbs": "Easily manage and configure your breadcrumbs"
+    },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "RobertBoes\\InertiaBreadcrumbs\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "RobertBoes\\InertiaBreadcrumbs\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -49,15 +56,19 @@
         "test-coverage": "vendor/bin/pest coverage"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "pestphp/pest-plugin": true
+        }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "RobertBoes\\InertiaBreadcrumbs\\InertiaBreadcrumbsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "InertiaBreadcrumbs": "RobertBoes\\InertiaBreadcrumbs\\Facades\\InertiaBreadcrumbs"
             }
         }
     },
