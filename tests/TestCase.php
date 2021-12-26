@@ -3,6 +3,8 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\View;
+use Inertia\ServiceProvider as InertiaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbsServiceProvider;
 
@@ -15,11 +17,19 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'RobertBoes\\InertiaBreadcrumbs\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
+        View::addLocation(__DIR__.'/stubs/views');
+    }
+
+    protected function defineEnvironment($app)
+    {
+        $app->config->set('inertia.testing.ensure_pages_exist', false);
     }
 
     protected function getPackageProviders($app)
     {
         return [
+            InertiaServiceProvider::class,
             InertiaBreadcrumbsServiceProvider::class,
         ];
     }

@@ -27,10 +27,6 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
-        if ($this->app->runningInConsole()) {
-            return;
-        }
-
         if (! config('inertia-breadcrumbs.middleware.enabled', true)) {
             return;
         }

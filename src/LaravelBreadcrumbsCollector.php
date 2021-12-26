@@ -21,7 +21,7 @@ class LaravelBreadcrumbsCollector implements BreadcrumbCollectorContract
     {
         $breadcrumbs = $this->getBreadcrumbs();
 
-        return BreadcrumbCollection::make($breadcrumbs);
+        return new BreadcrumbCollection($breadcrumbs);
     }
 
     private function laravelBreadcrumbsExist(): bool
