@@ -11,6 +11,6 @@ class LaravelBreadcrumbsNotInstalledException extends Exception implements Provi
 {
     public function getSolution(): Solution
     {
-        return new InstallLaravelBreadcrumbs;
+        return new InstallLaravelBreadcrumbs();
     }
 }
