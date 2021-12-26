@@ -83,7 +83,7 @@ class NonPestMiddlewareTest extends TestCase
         $this->get('/home')
             ->assertInertia(
                 fn (Assert $page) => $page
-                ->component('Home')
+                    ->component('Home')
             );
     }
 }
