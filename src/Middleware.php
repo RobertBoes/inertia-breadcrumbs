@@ -19,7 +19,7 @@ class Middleware
     {
         $breadcrumbs = $this->collector->forRequest($request);
 
-        if ($breadcrumbs->isEmpty()) {
+        if ($breadcrumbs->items()->isEmpty()) {
             return $next($request);
         }
 

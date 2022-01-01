@@ -12,7 +12,7 @@ class LaravelBreadcrumbsCollector implements BreadcrumbCollectorContract
 {
     public function __construct()
     {
-        if (! $this->laravelBreadcrumbsExist()) {
+        if (! $this->canUselaravelBreadcrumbs()) {
             throw new LaravelBreadcrumbsNotInstalledException();
         }
     }
@@ -24,7 +24,7 @@ class LaravelBreadcrumbsCollector implements BreadcrumbCollectorContract
         return new BreadcrumbCollection($breadcrumbs);
     }
 
-    private function laravelBreadcrumbsExist(): bool
+    private function canUselaravelBreadcrumbs(): bool
     {
         return class_exists(Breadcrumbs::class);
     }

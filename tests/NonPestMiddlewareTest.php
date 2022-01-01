@@ -28,7 +28,7 @@ class NonPestMiddlewareTest extends TestCase
     {
         $router->get('/home', function () {
             return Inertia::render('Home', []);
-        })->name('home');
+        })->name('home')->middleware('custom');
     }
 
     /**
@@ -73,6 +73,7 @@ class NonPestMiddlewareTest extends TestCase
 
     /**
      * @test
+     * @define-env usesCustomMiddlewareGroup
      */
     public function it_adds_breadcrumbs_for_current_route()
     {
@@ -80,10 +81,14 @@ class NonPestMiddlewareTest extends TestCase
             $trail->push('Home', route('home'));
         });
 
-        $this->get('/home')
+        $this->getJson('/home')
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Home')
+                    ->has('breadcrumbs', 1, fn (Assert $page) => $page
+                        ->where('title', 'Home')
+                        ->where('url', route('home'))
+                    )
             );
     }
 }
