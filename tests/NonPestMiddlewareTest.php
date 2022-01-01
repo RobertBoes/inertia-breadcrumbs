@@ -85,7 +85,10 @@ class NonPestMiddlewareTest extends TestCase
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Home')
-                    ->has('breadcrumbs', 1, fn (Assert $page) => $page
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
                         ->where('title', 'Home')
                         ->where('url', route('home'))
                     )
