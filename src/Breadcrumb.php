@@ -7,14 +7,24 @@ use stdClass;
 
 class Breadcrumb implements Arrayable
 {
-    public readonly string $title;
+    private string $title;
 
-    public readonly ?string $url;
+    private ?string $url;
 
     public function __construct(string $title, ?string $url)
     {
         $this->title = $title;
         $this->url = $url;
+    }
+
+    public function title(): string
+    {
+        return $this->title;
+    }
+
+    public function url(): ?string
+    {
+        return $this->url;
     }
 
     public static function make(stdClass $data): self
