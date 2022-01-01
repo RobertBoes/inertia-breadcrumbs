@@ -89,8 +89,8 @@ class NonPestMiddlewareTest extends TestCase
                         'breadcrumbs',
                         1,
                         fn (Assert $page) => $page
-                        ->where('title', 'Home')
-                        ->where('url', route('home'))
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
                     )
             );
     }
