@@ -13,10 +13,10 @@ class BreadcrumbCollection implements Arrayable
     public Collection $items;
 
     /**
-     * 
-     * @param array|Collection $items 
-     * @param null|Closure(mixed): Breadcrumb $initializer 
-     * @return void 
+     *
+     * @param array|Collection $items
+     * @param null|Closure(mixed): Breadcrumb $initializer
+     * @return void
      */
     public function __construct(array|Collection $items, ?Closure $initializer = null)
     {
@@ -30,7 +30,7 @@ class BreadcrumbCollection implements Arrayable
                     return $initializer($breadcrumb);
                 }
 
-                throw new CannotCreateBreadcrumbException;
+                throw new CannotCreateBreadcrumbException();
             });
     }
 

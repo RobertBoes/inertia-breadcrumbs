@@ -28,7 +28,7 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
         if (! Breadcrumbs::has()) {
             return collect();
         }
-        
+
         return Breadcrumbs::current();
     }
 
