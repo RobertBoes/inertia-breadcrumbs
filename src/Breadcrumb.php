@@ -11,10 +11,13 @@ class Breadcrumb implements Arrayable
 
     private ?string $url;
 
-    public function __construct(string $title, ?string $url)
+    private ?array $data;
+
+    public function __construct(string $title, ?string $url = null, ?array $data = null)
     {
         $this->title = $title;
         $this->url = $url;
+        $this->data = $data;
     }
 
     public function title(): string
@@ -27,9 +30,9 @@ class Breadcrumb implements Arrayable
         return $this->url;
     }
 
-    public static function make(stdClass $data): self
+    public function data(): ?array
     {
-        return new self($data->title, $data->url);
+        return $this->data;
     }
 
     public function toArray()
@@ -37,6 +40,7 @@ class Breadcrumb implements Arrayable
         return array_filter([
             'title' => $this->title,
             'url' => $this->url,
+            'data' => $this->data,
         ]);
     }
 }

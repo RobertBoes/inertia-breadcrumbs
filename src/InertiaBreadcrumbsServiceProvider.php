@@ -3,6 +3,8 @@
 namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Routing\Router;
+use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
+use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -22,7 +24,7 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', LaravelBreadcrumbsCollector::class));
+        $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', DiglacticBreadcrumbsCollector::class));
     }
 
     public function packageBooted()

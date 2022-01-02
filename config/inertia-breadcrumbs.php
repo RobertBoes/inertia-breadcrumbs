@@ -1,5 +1,8 @@
 <?php
 
+use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
+use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
+
 return [
     'middleware' => [
         /**
@@ -16,6 +19,7 @@ return [
 
     /**
      * By default a collector for diglactic/laravel-breadcrumbs is used
+     * If you're using tabuna/breadcrumbs you can use TabunaBreadcrumbsCollector::class
      */
-    'collector' => RobertBoes\InertiaBreadcrumbs\LaravelBreadcrumbsCollector::class,
+    'collector' => DiglacticBreadcrumbsCollector::class,
 ];

@@ -2,23 +2,35 @@
 
 namespace RobertBoes\InertiaBreadcrumbs;
 
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
+use RobertBoes\InertiaBreadcrumbs\Exceptions\CannotCreateBreadcrumbException;
 
 class BreadcrumbCollection implements Arrayable
 {
     /** @var Collection<int, Breadcrumb> */
     public Collection $items;
 
-    public function __construct(array|Collection $items)
+    /**
+     * 
+     * @param array|Collection $items 
+     * @param null|Closure(mixed): Breadcrumb $initializer 
+     * @return void 
+     */
+    public function __construct(array|Collection $items, ?Closure $initializer = null)
     {
         $this->items = Collection::wrap($items)
-            ->map(function (mixed $breadcrumb): Breadcrumb {
+            ->map(function (mixed $breadcrumb) use ($initializer): Breadcrumb {
                 if ($breadcrumb instanceof Breadcrumb) {
                     return $breadcrumb;
                 }
 
-                return Breadcrumb::make($breadcrumb);
+                if ($initializer) {
+                    return $initializer($breadcrumb);
+                }
+
+                throw new CannotCreateBreadcrumbException;
             });
     }
 

@@ -5,6 +5,7 @@ namespace RobertBoes\InertiaBreadcrumbs;
 use Closure;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 
 class Middleware
 {

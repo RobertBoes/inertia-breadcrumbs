@@ -94,4 +94,29 @@ class NonPestMiddlewareTest extends TestCase
                     )
             );
     }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_adds_diglactic_breadcrumbs_with_additional_data()
+    {
+        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
+            $trail->push('Home', route('home'), ['icon' => 'home.png']);
+        });
+
+        $this->getJson('/home')
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('data.icon', 'home.png')
+                    )
+            );
+    }
 }

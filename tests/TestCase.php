@@ -18,7 +18,7 @@ class TestCase extends Orchestra
             fn (string $modelName) => 'RobertBoes\\InertiaBreadcrumbs\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
-        View::addLocation(__DIR__.'/stubs/views');
+        View::addLocation(__DIR__.'/Stubs/views');
     }
 
     protected function defineEnvironment($app)
