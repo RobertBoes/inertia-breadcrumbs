@@ -3,7 +3,6 @@
 namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Contracts\Support\Arrayable;
-use stdClass;
 
 class Breadcrumb implements Arrayable
 {
