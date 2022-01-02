@@ -82,6 +82,7 @@ class NonPestMiddlewareTest extends TestCase
         });
 
         $this->getJson('/home')
+            ->assertOk()
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Home')
@@ -106,6 +107,7 @@ class NonPestMiddlewareTest extends TestCase
         });
 
         $this->getJson('/home')
+            ->assertOk()
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Home')
