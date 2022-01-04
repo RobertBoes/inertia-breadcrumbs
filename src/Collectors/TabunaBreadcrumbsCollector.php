@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
@@ -13,7 +14,7 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
 {
     public function forRequest(Request $request): BreadcrumbCollection
     {
-        $breadcrumbs = $this->getBreadcrumbs();
+        $breadcrumbs = $this->getBreadcrumbs($request);
 
         return new BreadcrumbCollection($breadcrumbs, function (Crumb $breadcrumb): Breadcrumb {
             return new Breadcrumb(
@@ -23,13 +24,17 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
         });
     }
 
-    private function getBreadcrumbs(): Collection
+    private function getBreadcrumbs(Request $request): Collection
     {
-        if (! Breadcrumbs::has()) {
+        if (! ($route = $request->route()) instanceof Route) {
             return collect();
         }
 
-        return Breadcrumbs::current();
+        if (! Breadcrumbs::has($route->getName())) {
+            return collect();
+        }
+
+        return Breadcrumbs::generate($route->getName(), ...$route->parameters());
     }
 
     public static function requiredClass(): string

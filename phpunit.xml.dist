@@ -17,6 +17,7 @@
     failOnEmptyTestSuite="true"
     beStrictAboutOutputDuringTests="true"
     verbose="true"
+    printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
 >
     <testsuites>
         <testsuite name="Inertia Breadcrumbs Test Suite">
