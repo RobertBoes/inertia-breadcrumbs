@@ -16,9 +16,10 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
     {
         $breadcrumbs = $this->getBreadcrumbs($request);
 
-        return new BreadcrumbCollection($breadcrumbs, function (Crumb $breadcrumb): Breadcrumb {
+        return new BreadcrumbCollection($breadcrumbs, function (Crumb $breadcrumb) use ($request): Breadcrumb {
             return new Breadcrumb(
                 title: $breadcrumb->title(),
+                current: $request->fullUrlIs($breadcrumb->url()),
                 url: $breadcrumb->url(),
             );
         });

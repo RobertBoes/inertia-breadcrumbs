@@ -18,11 +18,12 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
     {
         $breadcrumbs = $this->getBreadcrumbs($request);
 
-        return new BreadcrumbCollection($breadcrumbs, function (stdClass $breadcrumb): Breadcrumb {
+        return new BreadcrumbCollection($breadcrumbs, function (stdClass $breadcrumb) use ($request): Breadcrumb {
             $data = array_diff_key(get_object_vars($breadcrumb), array_flip(['title', 'url']));
 
             return new Breadcrumb(
                 title: $breadcrumb->title,
+                current: $request->fullUrlIs($breadcrumb->url),
                 url: $breadcrumb->url,
                 data: $data,
             );

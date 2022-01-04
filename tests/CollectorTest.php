@@ -54,6 +54,7 @@ class CollectorTest extends TestCase
         $this->assertInstanceOf(DiglacticBreadcrumbsCollector::class, $collector);
 
         $crumbs = $collector->forRequest($request);
+
         $this->assertSame(2, $crumbs->items()->count());
         $this->assertSame([
             [
@@ -63,6 +64,7 @@ class CollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
+                'current' => true,
             ]
         ], $crumbs->toArray());
     }
@@ -94,6 +96,7 @@ class CollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
+                'current' => true,
             ]
         ], $crumbs->toArray());
     }

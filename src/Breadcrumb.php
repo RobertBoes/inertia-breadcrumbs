@@ -8,13 +8,16 @@ class Breadcrumb implements Arrayable
 {
     private string $title;
 
+    private bool $current;
+
     private ?string $url;
 
     private ?array $data;
 
-    public function __construct(string $title, ?string $url = null, ?array $data = null)
+    public function __construct(string $title, ?bool $current, ?string $url = null, ?array $data = null)
     {
         $this->title = $title;
+        $this->current = $current ?? false;
         $this->url = $url;
         $this->data = $data;
     }
@@ -39,6 +42,7 @@ class Breadcrumb implements Arrayable
         return array_filter([
             'title' => $this->title,
             'url' => $this->url,
+            'current' => $this->current,
             'data' => $this->data,
         ]);
     }
