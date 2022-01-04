@@ -36,7 +36,7 @@ class CollectorTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      */
     public function it_collects_diglactic_breadcrumbs()
     {
@@ -45,7 +45,7 @@ class CollectorTest extends TestCase
             $trail->push('Profile', route('profile'));
             $trail->push('Edit profile', route('profile.edit'));
         });
-        
+
         $request = RequestBuilder::create('profile.edit');
 
         /** @var BreadcrumbCollectorContract */
@@ -63,7 +63,7 @@ class CollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
-            ]
+            ],
         ], $crumbs->toArray());
     }
 
@@ -94,7 +94,7 @@ class CollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
-            ]
+            ],
         ], $crumbs->toArray());
     }
 }
