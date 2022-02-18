@@ -13,9 +13,9 @@ class InvalidDummyCollector extends AbstractBreadcrumbCollector
         return NonExistentDummyClass::class;
     }
 
-    public static function notInstalledException(): string
+    public static function packageIdentifier(): string
     {
-        return DummyException::class;
+        return 'dummy/breadcrumbs';
     }
 
     public function forRequest(Request $request): BreadcrumbCollection

@@ -25,6 +25,9 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', DiglacticBreadcrumbsCollector::class));
+        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
+            return class_exists($class);
+        });
     }
 
     public function packageBooted()

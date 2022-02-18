@@ -4,12 +4,12 @@ namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Exceptions\InvalidBreadcrumbException;
+use Diglactic\Breadcrumbs\Exceptions\UnnamedRouteException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
-use RobertBoes\InertiaBreadcrumbs\Exceptions\LaravelBreadcrumbsNotInstalledException;
 use stdClass;
 
 class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
@@ -38,7 +38,9 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
 
         try {
             return Breadcrumbs::generate($route->getName(), ...$route->parameters());
-        } catch (InvalidBreadcrumbException $e) {
+        } catch (InvalidBreadcrumbException) {
+            return collect();
+        } catch (UnnamedRouteException) {
             return collect();
         }
     }
@@ -48,8 +50,8 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
         return Breadcrumbs::class;
     }
 
-    public static function notInstalledException(): string
+    public static function packageIdentifier(): string
     {
-        return LaravelBreadcrumbsNotInstalledException::class;
+        return 'diglactic/laravel-breadcrumbs';
     }
 }

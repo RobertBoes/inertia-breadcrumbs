@@ -18,21 +18,116 @@ composer require robertboes/inertia-breadcrumbs
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --tag="inertia-breadcrumbs_without_prefix-config"
+php artisan vendor:publish --tag="inertia-breadcrumbs-config"
 ```
 
-This is the contents of the published config file:
+Next step is to install one of the following packages to manage your breadcrumbs:
 
+- [diglactic/laravel-breadcrumbs](https://github.com/diglactic/laravel-breadcrumbs)
+- [tabuna/breadcrumbs](https://github.com/tabuna/breadcrumbs)
+- [glhd/gretel](https://github.com/glhd/gretel)
+
+Configure your breadcrumbs as explained by the package
+
+Update your `config/inertia-breadcrumbs.php` configuration to use the correct collector:
 ```php
+// diglactic/laravel-breadcrumbs
+use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
+
 return [
+    'collector' => DiglacticBreadcrumbsCollector::class,
+];
+
+// tabuna/breadcrumbs
+use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
+
+return [
+    'collector' => TabunaBreadcrumbsCollector::class,
+];
+
+// glhd/gretel
+use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
+
+return [
+    'collector' => GretelBreadcrumbsCollector::class,
 ];
 ```
 
 ## Usage
 
+No matter which third party package you're using, this package will always share breadcrumbs to Inertia in the following format:
+```json
+[
+    {
+        title: "Dashboard",
+        url: "http://localhost/dashboard",
+    },
+    {
+        title: "Profile",
+        url: "http://localhost/dashboard/profile",
+        current: true,
+    }
+]
+```
+
+An example to render your breadcrumbs in Vue 3 could look like the following:
+
+```js
+<template>
+    <nav v-if="breadcrumbs">
+        <ol>
+            <li v-for="page in breadcrumbs">
+                <div>
+                    <span v-if="page ==='/'">/</span>
+                    <a
+                        v-else
+                        :href="page.url"
+                        :class="{ 'border-b border-blue-400': page.current }"
+                    >{{ page.title }}</a>
+                </div>
+            </li>
+        </ol>
+    </nav>
+</template>
+
+<script>
+import { usePage } from '@inertiajs/inertia-vue3'
+import { computed } from 'vue'
+
+export default {
+    setup() {
+        // Insert an element between all elements, insertBetween([1, 2, 3], '/') results in [1, '/', 2, '/', 3]
+        const insertBetween = (items, insertion) => {
+            return items.flatMap(
+                (value, index, array) =>
+                    array.length - 1 !== index
+                        ? [value, insertion]
+                        : value,
+            )
+        }
+
+        const breadcrumbs = computed(() => insertBetween(usePage().props.value.breadcrumbs || [], '/'))
+
+        return {
+            breadcrumbs,
+        }
+    },
+}
+</script>
+```
+
+### Notes on using `glhd/gretel`
+
+`glhd/gretel` shares the breadcrumbs automatically if it detects Inertia is installed and shares the props with the same key (`breadcrumbs`). If you want to use this package with gretel you should disable their automatic sharing by updating the config:
+
 ```php
-$inertia-breadcrumbs = new RobertBoes\InertiaBreadcrumbs();
-echo $inertia-breadcrumbs->echoPhrase('Hello, RobertBoes!');
+// config/gretel.php
+
+return [
+    'packages' => [
+		'inertiajs/inertia-laravel' => false,
+	],
+];
 ```
 
 ## Testing
@@ -44,6 +139,9 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## TODO
+- [ ] Create Vue 2/3 components
 
 ## Contributing
 

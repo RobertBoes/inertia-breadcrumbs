@@ -26,8 +26,8 @@ class BreadcrumbCollection implements Arrayable
                     return $breadcrumb;
                 }
 
-                if ($initializer) {
-                    return $initializer($breadcrumb);
+                if ($initializer && ($result = $initializer($breadcrumb)) instanceof Breadcrumb) {
+                    return $result;
                 }
 
                 throw new CannotCreateBreadcrumbException();

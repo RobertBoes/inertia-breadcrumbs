@@ -2,25 +2,26 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
+use Glhd\Gretel\Macros;
+use Glhd\Gretel\Registry;
+use Glhd\Gretel\View\Breadcrumb as GretelBreadcrumb;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
-use Tabuna\Breadcrumbs\Breadcrumbs;
-use Tabuna\Breadcrumbs\Crumb;
 
-class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
+class GretelBreadcrumbsCollector extends AbstractBreadcrumbCollector
 {
     public function forRequest(Request $request): BreadcrumbCollection
     {
         $breadcrumbs = $this->getBreadcrumbs($request);
 
-        return new BreadcrumbCollection($breadcrumbs, function (Crumb $breadcrumb) use ($request): Breadcrumb {
+        return new BreadcrumbCollection($breadcrumbs, function (GretelBreadcrumb $breadcrumb): Breadcrumb {
             return new Breadcrumb(
-                title: $breadcrumb->title(),
-                current: $request->fullUrlIs($breadcrumb->url()),
-                url: $breadcrumb->url(),
+                title: $breadcrumb->title,
+                current: $breadcrumb->is_current_page,
+                url: $breadcrumb->url,
             );
         });
     }
@@ -31,20 +32,18 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
             return collect();
         }
 
-        if (! Breadcrumbs::has($route->getName())) {
-            return collect();
-        }
+        $registry = app(Registry::class);
 
-        return Breadcrumbs::generate($route->getName(), ...$route->parameters());
+        return Macros::breadcrumbs($registry, $route)->toCollection();
     }
 
     public static function requiredClass(): string
     {
-        return Breadcrumbs::class;
+        return Registry::class;
     }
 
     public static function packageIdentifier(): string
     {
-        return 'tabuna/breadcrumbs';
+        return 'glhd/gretel';
     }
 }

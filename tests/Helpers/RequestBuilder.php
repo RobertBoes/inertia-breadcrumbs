@@ -43,4 +43,11 @@ class RequestBuilder
 
         return $request;
     }
+
+    public static function notFound(string $path, string $class = Request::class)
+    {
+        $request = $class::create(url($path));
+        
+        return $request;
+    }
 }

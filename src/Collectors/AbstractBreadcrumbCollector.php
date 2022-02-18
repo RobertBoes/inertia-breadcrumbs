@@ -2,21 +2,23 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
+use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+
 abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContract
 {
     public function __construct()
     {
         if (! $this->canUseImplementation()) {
-            throw new (static::notInstalledException());
+            throw new PackageNotInstalledException(static::packageIdentifier());
         }
     }
 
     private function canUseImplementation(): bool
     {
-        return class_exists(static::requiredClass());
+        return app('inertia-breadcrumbs-package-existence')(static::requiredClass());
     }
 
     abstract public static function requiredClass(): string;
 
-    abstract public static function notInstalledException(): string;
+    abstract public static function packageIdentifier(): string;
 }

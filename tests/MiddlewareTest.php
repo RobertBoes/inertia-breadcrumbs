@@ -6,7 +6,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Illuminate\Routing\Router;
 use Inertia\Inertia;
-use Inertia\Testing\Assert;
+use Inertia\Testing\AssertableInertia as Assert;
 use RobertBoes\InertiaBreadcrumbs\Middleware;
 
 class MiddlewareTest extends TestCase
@@ -121,6 +121,21 @@ class MiddlewareTest extends TestCase
                             ->where('data.icon', 'home.png')
                             ->where('current', true)
                     )
+            );
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_does_not_add_breadcrumbs_when_route_has_no_breadcrumbs()
+    {
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->missing('breadcrumbs')
             );
     }
 }

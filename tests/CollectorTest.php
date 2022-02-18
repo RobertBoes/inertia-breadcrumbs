@@ -2,102 +2,63 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
-use Diglactic\Breadcrumbs\Breadcrumbs as DiglacticBreadcrumbs;
-use Diglactic\Breadcrumbs\Generator as DiglacticTrail;
-use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
-use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
-use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
-use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
-use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Classes\DummyException;
+use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
+use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
+use RobertBoes\InertiaBreadcrumbs\Exceptions\CannotCreateBreadcrumbException;
+use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
 use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Classes\InvalidDummyCollector;
-use Tabuna\Breadcrumbs\Breadcrumbs as TabunaBreadcrumbs;
-use Tabuna\Breadcrumbs\Trail as TabunaTrail;
+use stdClass;
 
 class CollectorTest extends TestCase
 {
-    /**
-     * @param \Illuminate\Routing\Router $router
-     */
-    public function defineRoutes($router)
-    {
-        $router->inertia('/profile', 'Profile/Index')->name('profile')->middleware('custom');
-        $router->inertia('/profile/edit', 'Profile/Edit')->name('profile.edit')->middleware('custom');
-    }
-
     /**
      * @test
      */
     public function it_throws_an_exception_when_required_class_does_not_exist()
     {
-        $this->expectException(DummyException::class);
+        $this->expectException(PackageNotInstalledException::class);
+        $this->expectExceptionMessage('dummy/breadcrumbs is not installed');
 
         new InvalidDummyCollector();
     }
 
     /**
      * @test
-     *
      */
-    public function it_collects_diglactic_breadcrumbs()
+    public function it_creates_breadcrumb_collection_from_breadcrumbs()
     {
-        $this->app->bind(BreadcrumbCollectorContract::class, DiglacticBreadcrumbsCollector::class);
-        DiglacticBreadcrumbs::for('profile.edit', function (DiglacticTrail $trail) {
-            $trail->push('Profile', route('profile'));
-            $trail->push('Edit profile', route('profile.edit'));
-        });
+        $breadcrumbs = new BreadcrumbCollection([
+            new Breadcrumb('test', false),
+        ]);
 
-        $request = RequestBuilder::create('profile.edit');
-
-        /** @var BreadcrumbCollectorContract */
-        $collector = app(BreadcrumbCollectorContract::class);
-
-        $this->assertInstanceOf(DiglacticBreadcrumbsCollector::class, $collector);
-
-        $crumbs = $collector->forRequest($request);
-
-        $this->assertSame(2, $crumbs->items()->count());
-        $this->assertSame([
-            [
-                'title' => 'Profile',
-                'url' => route('profile'),
-            ],
-            [
-                'title' => 'Edit profile',
-                'url' => route('profile.edit'),
-                'current' => true,
-            ],
-        ], $crumbs->toArray());
+        $this->assertSame(1, $breadcrumbs->items()->count());
     }
 
     /**
      * @test
      */
-    public function it_collects_tabuna_breadcrumbs()
+    public function it_throws_an_excpetion_with_invalid_breadcrumbs()
     {
-        $this->app->bind(BreadcrumbCollectorContract::class, TabunaBreadcrumbsCollector::class);
-        TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
-            $trail->push('Profile', route('profile'));
-            $trail->push('Edit profile', route('profile.edit'));
+        $this->expectException(CannotCreateBreadcrumbException::class);
+        new BreadcrumbCollection([
+            [
+                'title' => 'Does not work',
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_using_incorrect_initializer()
+    {
+        $this->expectException(CannotCreateBreadcrumbException::class);
+        new BreadcrumbCollection([
+            [
+                'title' => 'Does not work',
+            ],
+        ], function ($crumb): stdClass {
+            return (object) $crumb;
         });
-
-        $request = RequestBuilder::create('profile.edit');
-
-        $collector = app(BreadcrumbCollectorContract::class);
-
-        $this->assertInstanceOf(TabunaBreadcrumbsCollector::class, $collector);
-
-        $crumbs = $collector->forRequest($request);
-        $this->assertSame(2, $crumbs->items()->count());
-        $this->assertSame([
-            [
-                'title' => 'Profile',
-                'url' => route('profile'),
-            ],
-            [
-                'title' => 'Edit profile',
-                'url' => route('profile.edit'),
-                'current' => true,
-            ],
-        ], $crumbs->toArray());
     }
 }

@@ -32,6 +32,11 @@ class Breadcrumb implements Arrayable
         return $this->url;
     }
 
+    public function current(): bool
+    {
+        return $this->current;
+    }
+
     public function data(): ?array
     {
         return $this->data;
@@ -40,10 +45,10 @@ class Breadcrumb implements Arrayable
     public function toArray()
     {
         return array_filter([
-            'title' => $this->title,
-            'url' => $this->url,
-            'current' => $this->current,
-            'data' => $this->data,
+            'title' => $this->title(),
+            'url' => $this->url(),
+            'current' => $this->current(),
+            'data' => $this->data(),
         ]);
     }
 }
