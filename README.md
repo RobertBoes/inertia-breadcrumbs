@@ -1,9 +1,12 @@
 # Laravel package to automatically share breadcrumbs to Inertia
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/run-tests?label=tests)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/Check%20&%20fix%20styling?label=code%20style)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/robertboes/inertia-breadcrumbs?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/run-tests?label=tests&style=flat-square)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/Check%20&%20fix%20styling?label=code%20style&style=flat-square)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/RobertBoes/inertia-breadcrumbs?label=latest%20version&style=flat-square)](https://github.com/RobertBoes/inertia-breadcrumbs/releases/latest)
 [![Total Downloads](https://img.shields.io/packagist/dt/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
+[![GitHub](https://img.shields.io/github/license/RobertBoes/inertia-breadcrumbs?style=flat-square)](https://github.com/RobertBoes/inertia-breadcrumbs/blob/main/LICENSE.md)
 
 
 This package automatically shares breadcrumbs as Inertia props in a standardized way, with support for multiple breadcrumb packages. 
