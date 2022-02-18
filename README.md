@@ -125,8 +125,8 @@ export default {
 
 return [
     'packages' => [
-		'inertiajs/inertia-laravel' => false,
-	],
+        'inertiajs/inertia-laravel' => false,
+    ],
 ];
 ```
 
