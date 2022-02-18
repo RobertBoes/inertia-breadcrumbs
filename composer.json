@@ -4,7 +4,9 @@
     "keywords": [
         "RobertBoes",
         "laravel",
-        "inertia-breadcrumbs"
+        "inertia-breadcrumbs",
+        "breadcrumbs",
+        "inertiajs"
     ],
     "homepage": "https://github.com/robertboes/inertia-breadcrumbs",
     "license": "MIT",

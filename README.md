@@ -1,4 +1,4 @@
-# Laravel package to automatically generates breadcrumbs for your Inertia app
+# Laravel package to automatically share breadcrumbs to Inertia
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/run-tests?label=tests)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+This package automatically shares breadcrumbs as Inertia props in a standardized way, with support for multiple breadcrumb packages. 
 
 ## Installation
 
