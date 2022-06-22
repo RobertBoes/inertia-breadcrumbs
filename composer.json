@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.0",
         "illuminate/contracts": "^9.0",
-        "inertiajs/inertia-laravel": "^0.5.2",
+        "inertiajs/inertia-laravel": "^0.5.2 || ^0.6.2",
         "spatie/laravel-package-tools": "^1.11.0"
     },
     "require-dev": {
