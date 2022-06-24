@@ -2,6 +2,15 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.2.1 - 2022-06-24
+
+### What's Changed
+
+- Added tests to verify route model binding works for [diglactic/laravel-breadcrumbs](https://github.com/diglactic/laravel-breadcrumbs)
+- Added a global classifier, this can be used to determine if breadcrumbs should be shared or not
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.2.0...0.2.1
+
 ## v0.2.0 - 2022-06-22
 
 ### What's Changed
