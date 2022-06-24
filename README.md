@@ -119,6 +119,31 @@ export default {
 </script>
 ```
 
+## Using a classifier
+
+A classifier is used to determine when breadcrumbs should be shared as Inertia props.
+By default all breadcrumbs are shared, but this package is shipped with the `IgnoreSingleBreadcrumbs` classifier, which simply discards a breadcrumb collection containing only one route.
+
+To write your own classifier you'll have to implement `RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection\ClassifierContract` and update the `inertia-breadcrumbs.classifier` config, for example:
+
+```php
+<?php
+
+namespace App\Support;
+
+use Illuminate\Support\Str;
+use RobertBoes\InertiaBreadcrumbs\Classifier\ClassifierContract;
+use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
+
+class IgnoreAdminBreadcrumbs implements ClassifierContract
+{
+    public function shouldShareBreadcrumbs(BreadcrumbCollection $collection): bool
+    {
+        return ! Str::startsWith($collection->first()->url(), '/admin')''
+    }
+}
+```
+
 ### Notes on using `glhd/gretel`
 
 `glhd/gretel` shares the breadcrumbs automatically if it detects Inertia is installed and shares the props with the same key (`breadcrumbs`). If you want to use this package with gretel you should disable their automatic sharing by updating the config:
