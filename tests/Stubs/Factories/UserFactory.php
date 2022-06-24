@@ -1,6 +1,6 @@
 <?php
 
-namespace RobertBoes\InertiaBreadcrumbs\Tests\Database\Factories;
+namespace RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
