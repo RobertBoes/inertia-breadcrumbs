@@ -5,11 +5,14 @@ namespace RobertBoes\InertiaBreadcrumbs\Tests;
 use Diglactic\Breadcrumbs\Breadcrumbs as DiglacticBreadcrumbs;
 use Diglactic\Breadcrumbs\Generator as DiglacticTrail;
 use Diglactic\Breadcrumbs\ServiceProvider;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Inertia\Testing\AssertableInertia as Assert;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
+use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Models\User;
 
 class DiglacticCollectorTest extends TestCase
 {
@@ -25,6 +28,11 @@ class DiglacticCollectorTest extends TestCase
         return ServiceProvider::class;
     }
 
+    public function usesCustomMiddlewareGroup($app)
+    {
+        $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+    }
+
     /**
      * @param \Illuminate\Routing\Router $router
      */
@@ -33,6 +41,12 @@ class DiglacticCollectorTest extends TestCase
         $router->inertia('/profile', 'Profile/Index')->name('profile');
         $router->inertia('/profile/edit', 'Profile/Edit')->name('profile.edit');
         $router->inertia('/dashboard', 'Dashboard')->name('dashboard');
+        $router->inertia('/users', 'Users/Index')->name('users.index');
+        $router->get('/users/{user}', function (User $user) {
+            return inertia('Users/Show', [
+                'user_name' => $user->name,
+            ]);
+        })->name('users.show')->middleware(SubstituteBindings::class, 'custom');
     }
 
     /**
@@ -85,6 +99,30 @@ class DiglacticCollectorTest extends TestCase
                 'current' => true,
             ],
         ], $crumbs->toArray());
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_resolves_a_single_route_parameter()
+    {
+        $user = User::factory()->create();
+        DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
+            $trail->push('Users', route('users.index'));
+            $trail->push($user->name, route('users.show', ['user' => $user]));
+        });
+
+        $this->getJson(route('users.show', ['user' => $user]))
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Users/Show')
+                    ->has(
+                        'breadcrumbs',
+                        2
+                    )
+            );
     }
 
     /**

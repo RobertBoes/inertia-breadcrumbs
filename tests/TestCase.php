@@ -43,4 +43,9 @@ class TestCase extends Orchestra
         $migration->up();
         */
     }
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadLaravelMigrations();
+    }
 }
