@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "composer/composer": "^2.1",
-        "diglactic/laravel-breadcrumbs": "^7.0",
+        "diglactic/laravel-breadcrumbs": "^7.0 || ^8.0",
         "glhd/gretel": "^1.5",
         "nunomaduro/collision": "^6.0",
         "nunomaduro/larastan": "^2.0",

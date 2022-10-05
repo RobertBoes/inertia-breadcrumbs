@@ -47,6 +47,11 @@ class DiglacticCollectorTest extends TestCase
                 'user_name' => $user->name,
             ]);
         })->name('users.show')->middleware(SubstituteBindings::class, 'custom');
+        $router->get('/users/{person}/{user}', function (User $user) {
+            return inertia('Users/Show', [
+                'user_name' => $user->name,
+            ]);
+        })->name('users.show.person')->middleware(SubstituteBindings::class, 'custom');
     }
 
     /**
