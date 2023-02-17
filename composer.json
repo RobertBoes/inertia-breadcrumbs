@@ -1,6 +1,6 @@
 {
     "name": "robertboes/inertia-breadcrumbs",
-    "description": "Laravel package to automatically generates breadcrumbs for your Inertia app",
+    "description": "Laravel package to automatically share breadcrumbs to Inertia",
     "keywords": [
         "RobertBoes",
         "laravel",
