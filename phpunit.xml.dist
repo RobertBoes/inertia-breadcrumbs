@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
     backupGlobals="false"
-    backupStaticAttributes="false"
+    backupStaticProperties="false"
     bootstrap="vendor/autoload.php"
     colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
     processIsolation="false"
     stopOnFailure="false"
     executionOrder="random"
@@ -16,8 +13,7 @@
     failOnRisky="true"
     failOnEmptyTestSuite="true"
     beStrictAboutOutputDuringTests="true"
-    verbose="true"
-    printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+    cacheDirectory=".phpunit.cache"
 >
     <testsuites>
         <testsuite name="Inertia Breadcrumbs Test Suite">
@@ -40,7 +36,6 @@
     <php>
         <env name="APP_ENV" value="local"/>
         <env name="APP_DEBUG" value="true"/>
-
         <env name="RAY_ENABLED" value="(true)"/>
         <env name="SEND_CACHE_TO_RAY" value="(false)"/>
         <env name="SEND_DUMPS_TO_RAY" value="(true)"/>
