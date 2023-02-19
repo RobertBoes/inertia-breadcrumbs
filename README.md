@@ -2,8 +2,8 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
 [![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/robertboes/inertia-breadcrumbs?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/run-tests?label=tests&style=flat-square)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/robertboes/inertia-breadcrumbs/Check%20&%20fix%20styling?label=code%20style&style=flat-square)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/RobertBoes/inertia-breadcrumbs/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/robertboes/inertia-breadcrumbs/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/RobertBoes/inertia-breadcrumbs/php-cs-fixer.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/RobertBoes/inertia-breadcrumbs/actions?query=workflow%3A%22Check+%26+fix+styling%22+branch%3Amain++)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/RobertBoes/inertia-breadcrumbs?label=latest%20version&style=flat-square)](https://github.com/RobertBoes/inertia-breadcrumbs/releases/latest)
 [![Total Downloads](https://img.shields.io/packagist/dt/robertboes/inertia-breadcrumbs.svg?style=flat-square)](https://packagist.org/packages/robertboes/inertia-breadcrumbs)
 [![GitHub](https://img.shields.io/github/license/RobertBoes/inertia-breadcrumbs?style=flat-square)](https://github.com/RobertBoes/inertia-breadcrumbs/blob/main/LICENSE.md)
