@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.3.0 - 2023-02-19
+
+### What's Changed
+
+- Support for Laravel 10
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.2.1...0.3.0
+
 ## v0.2.1 - 2022-06-24
 
 ### What's Changed
