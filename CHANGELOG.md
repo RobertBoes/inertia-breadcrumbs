@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.3.2 - 2023-07-24
+
+### What's Changed
+
+- Fix routes with "name" parameter by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/8
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.3.1...0.3.2
+
 ## v0.3.1 - 2023-07-24
 
 ### What's Changed
