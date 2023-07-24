@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.3.1 - 2023-07-24
+
+### What's Changed
+
+- Added: Customize breadcrumb serialization by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/7
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.3.0...0.3.1
+
 ## v0.3.0 - 2023-02-19
 
 ### What's Changed
