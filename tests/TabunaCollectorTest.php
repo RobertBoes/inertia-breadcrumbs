@@ -33,6 +33,11 @@ class TabunaCollectorTest extends TestCase
         $router->inertia('/profile', 'Profile/Index')->name('profile');
         $router->inertia('/profile/edit', 'Profile/Edit')->name('profile.edit');
         $router->inertia('/dashboard', 'Dashboard')->name('dashboard');
+        $router->get('/{name}', function (string $name) {
+            return inertia('Name', [
+                'name' => $name,
+            ]);
+        })->name('reserved-keyword-route');
     }
 
     /**
@@ -81,6 +86,28 @@ class TabunaCollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
+                'current' => true,
+            ],
+        ], $crumbs->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_use_a_reserved_keyword()
+    {
+        TabunaBreadcrumbs::for('reserved-keyword-route', function (TabunaTrail $trail) {
+            $trail->push('Reserved', route('reserved-keyword-route', ['name' => 'robert']));
+        });
+
+        $request = RequestBuilder::create('reserved-keyword-route', ['name' => 'robert']);
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(1, $crumbs->items()->count());
+        $this->assertSame([
+            [
+                'title' => 'Reserved',
+                'url' => route('reserved-keyword-route', ['name' => 'robert']),
                 'current' => true,
             ],
         ], $crumbs->toArray());
