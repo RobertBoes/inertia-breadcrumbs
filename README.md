@@ -144,6 +144,33 @@ class IgnoreAdminBreadcrumbs implements ClassifierContract
 }
 ```
 
+## Serializing breadcrumbs
+
+In some cases you might not like the default way breadcrumbs are serialized.
+To modify the way the breadcrumbs are being sent to the frontend you can register a serialize callback
+in the `boot` method of a service provider:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
+
+class AppServiceProvider extends ServiceProvider
+{
+	public function boot(): void
+    {
+        InertiaBreadcrumbs::serializeUsing(fn (Breadcrumb $breadcrumb) => [
+            'name' => $breadcrumb->title(),
+            'href' => $breadcrumb->url(),
+            'active' => $breadcrumb->current(),
+            'data' => $breadcrumb->data(),
+        ]);
+    }
+}
+```
+
 ### Notes on using `glhd/gretel`
 
 `glhd/gretel` shares the breadcrumbs automatically if it detects Inertia is installed and shares the props with the same key (`breadcrumbs`). If you want to use this package with gretel you should disable their automatic sharing by updating the config:

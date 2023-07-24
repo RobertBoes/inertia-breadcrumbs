@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\View;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbsServiceProvider;
 
 class TestCase extends Orchestra
@@ -13,6 +14,8 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        InertiaBreadcrumbs::$serializeUsingCallback = null;
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'RobertBoes\\InertiaBreadcrumbs\\Database\\Factories\\'.class_basename($modelName).'Factory'
