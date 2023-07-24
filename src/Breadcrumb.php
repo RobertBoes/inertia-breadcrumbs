@@ -42,8 +42,12 @@ class Breadcrumb implements Arrayable
         return $this->data;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
+        if (InertiaBreadcrumbs::$serializeUsingCallback) {
+            return call_user_func(InertiaBreadcrumbs::$serializeUsingCallback, $this);
+        }
+
         return array_filter([
             'title' => $this->title(),
             'url' => $this->url(),
