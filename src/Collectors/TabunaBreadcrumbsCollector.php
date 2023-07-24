@@ -35,7 +35,7 @@ class TabunaBreadcrumbsCollector extends AbstractBreadcrumbCollector
             return collect();
         }
 
-        return Breadcrumbs::generate($route->getName(), ...$route->parameters());
+        return Breadcrumbs::generate($route->getName(), ...array_values($route->parameters()));
     }
 
     public static function requiredClass(): string

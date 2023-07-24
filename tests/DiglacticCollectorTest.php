@@ -52,6 +52,11 @@ class DiglacticCollectorTest extends TestCase
                 'user_name' => $user->name,
             ]);
         })->name('users.show.person')->middleware(SubstituteBindings::class, 'custom');
+        $router->get('/{name}', function (string $name) {
+            return inertia('Name', [
+                'name' => $name,
+            ]);
+        })->name('reserved-keyword-route');
     }
 
     /**
@@ -101,6 +106,28 @@ class DiglacticCollectorTest extends TestCase
             [
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
+                'current' => true,
+            ],
+        ], $crumbs->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_use_a_reserved_keyword()
+    {
+        DiglacticBreadcrumbs::for('reserved-keyword-route', function (DiglacticTrail $trail) {
+            $trail->push('Reserved', route('reserved-keyword-route', ['name' => 'robert']));
+        });
+
+        $request = RequestBuilder::create('reserved-keyword-route', ['name' => 'robert']);
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(1, $crumbs->items()->count());
+        $this->assertSame([
+            [
+                'title' => 'Reserved',
+                'url' => route('reserved-keyword-route', ['name' => 'robert']),
                 'current' => true,
             ],
         ], $crumbs->toArray());
