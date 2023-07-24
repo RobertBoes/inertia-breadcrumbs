@@ -2,9 +2,9 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
-use Inertia\Inertia;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
+use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
