@@ -6,6 +6,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs as DiglacticBreadcrumbs;
 use Diglactic\Breadcrumbs\Generator as DiglacticTrail;
 use Diglactic\Breadcrumbs\ServiceProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
@@ -177,5 +178,59 @@ class DiglacticCollectorTest extends TestCase
         $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
 
         $this->assertTrue($crumbs->items()->isEmpty());
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_does_not_ignore_query_parameters_by_default_when_determining_current_route()
+    {
+        $user = User::factory()->create();
+        DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
+            $trail->push($user->name, route('users.show', ['user' => $user]));
+        });
+
+        $this->getJson(route('users.show', ['user' => $user, 'foo' => 'bar']))
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Users/Show')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $prop) => $prop
+                            ->missing('current')
+                            ->etc()
+                    )
+            );
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_ignores_query_parameters_when_configured_to_do_so_when_determining_current_route()
+    {
+        Config::set('inertia-breadcrumbs.ignore_query', true);
+
+        $user = User::factory()->create();
+        DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
+            $trail->push($user->name, route('users.show', ['user' => $user]));
+        });
+
+        $this->getJson(route('users.show', ['user' => $user, 'foo' => 'bar']))
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Users/Show')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $prop) => $prop
+                            ->where('current', true)
+                            ->etc()
+                    )
+            );
     }
 }

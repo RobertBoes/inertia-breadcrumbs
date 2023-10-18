@@ -23,7 +23,7 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
 
             return new Breadcrumb(
                 title: $breadcrumb->title,
-                current: $request->fullUrlIs($breadcrumb->url),
+                current: $this->isCurrentUrl($request, $breadcrumb->url),
                 url: $breadcrumb->url,
                 data: $data,
             );
