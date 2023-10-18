@@ -33,4 +33,9 @@ return [
      */
     'classifier' => AppendAllBreadcrumbs::class,
     // 'classifier' => IgnoreSingleBreadcrumbs::class,
+
+    /**
+     * Whether the query string should be ignored when determining the current route
+     */
+    'ignore_query' => false,
 ];
