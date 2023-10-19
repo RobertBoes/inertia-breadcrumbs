@@ -184,36 +184,8 @@ class DiglacticCollectorTest extends TestCase
      * @test
      * @define-env usesCustomMiddlewareGroup
      */
-    public function it_does_not_ignore_query_parameters_by_default_when_determining_current_route()
+    public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
-        $user = User::factory()->create();
-        DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
-            $trail->push($user->name, route('users.show', ['user' => $user]));
-        });
-
-        $this->getJson(route('users.show', ['user' => $user, 'foo' => 'bar']))
-            ->assertOk()
-            ->assertInertia(
-                fn (Assert $page) => $page
-                    ->component('Users/Show')
-                    ->has(
-                        'breadcrumbs',
-                        1,
-                        fn (Assert $prop) => $prop
-                            ->missing('current')
-                            ->etc()
-                    )
-            );
-    }
-
-    /**
-     * @test
-     * @define-env usesCustomMiddlewareGroup
-     */
-    public function it_ignores_query_parameters_when_configured_to_do_so_when_determining_current_route()
-    {
-        Config::set('inertia-breadcrumbs.ignore_query', true);
-
         $user = User::factory()->create();
         DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
             $trail->push($user->name, route('users.show', ['user' => $user]));
@@ -229,6 +201,34 @@ class DiglacticCollectorTest extends TestCase
                         1,
                         fn (Assert $prop) => $prop
                             ->where('current', true)
+                            ->etc()
+                    )
+            );
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
+    {
+        Config::set('inertia-breadcrumbs.ignore_query', false);
+
+        $user = User::factory()->create();
+        DiglacticBreadcrumbs::for('users.show', function (DiglacticTrail $trail, User $user) {
+            $trail->push($user->name, route('users.show', ['user' => $user]));
+        });
+
+        $this->getJson(route('users.show', ['user' => $user, 'foo' => 'bar']))
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Users/Show')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $prop) => $prop
+                            ->missing('current')
                             ->etc()
                     )
             );

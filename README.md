@@ -171,9 +171,9 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-## Ignoring the query string when determining the current URL
+## Including the query string when determining the current URL
 
-By default, the full request URL will be used to check for the current url, meaning a breadcrumb defined for `/users/{id}` will match `/users/1`, but not `/users/1?foo=bar`. To change this behaviour and completely ignore the query string, change `ignore_query` to `true` in the `config/inertia-breadcrumbs.php` file.
+By default, the query string will be ignored when determining the current url, meaning a breadcrumb defined for `/users/{id}` will match both `/users/1` and `/users/1?foo=bar`. To change this behaviour and include the query string (meaning `/users/1?foo=bar` will not be seen as the current page), change `ignore_query` to `false` in the `config/inertia-breadcrumbs.php` file.
 
 ### Notes on using `glhd/gretel`
 

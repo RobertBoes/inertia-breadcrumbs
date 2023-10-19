@@ -37,5 +37,5 @@ return [
     /**
      * Whether the query string should be ignored when determining the current route
      */
-    'ignore_query' => false,
+    'ignore_query' => true,
 ];
