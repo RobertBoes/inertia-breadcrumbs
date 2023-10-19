@@ -140,37 +140,8 @@ class TabunaCollectorTest extends TestCase
      * @test
      * @define-env usesCustomMiddlewareGroup
      */
-    public function it_does_not_ignore_query_parameters_by_default_when_determining_current_route()
+    public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
-        TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
-            $trail->push('Profile', route('profile'));
-            $trail->push('Edit profile', route('profile.edit'));
-        });
-
-        $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
-        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
-
-        $this->assertSame(2, $crumbs->items()->count());
-        $this->assertSame([
-            [
-                'title' => 'Profile',
-                'url' => route('profile'),
-            ],
-            [
-                'title' => 'Edit profile',
-                'url' => route('profile.edit'),
-            ],
-        ], $crumbs->toArray());
-    }
-
-    /**
-     * @test
-     * @define-env usesCustomMiddlewareGroup
-     */
-    public function it_ignores_query_parameters_when_configured_to_do_so_when_determining_current_route()
-    {
-        Config::set('inertia-breadcrumbs.ignore_query', true);
-
         TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
             $trail->push('Profile', route('profile'));
             $trail->push('Edit profile', route('profile.edit'));
@@ -189,6 +160,35 @@ class TabunaCollectorTest extends TestCase
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
                 'current' => true,
+            ],
+        ], $crumbs->toArray());
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
+    {
+        Config::set('inertia-breadcrumbs.ignore_query', false);
+
+        TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
+            $trail->push('Profile', route('profile'));
+            $trail->push('Edit profile', route('profile.edit'));
+        });
+
+        $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(2, $crumbs->items()->count());
+        $this->assertSame([
+            [
+                'title' => 'Profile',
+                'url' => route('profile'),
+            ],
+            [
+                'title' => 'Edit profile',
+                'url' => route('profile.edit'),
             ],
         ], $crumbs->toArray());
     }
