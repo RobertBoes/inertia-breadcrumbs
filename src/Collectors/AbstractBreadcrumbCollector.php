@@ -16,7 +16,7 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
 
     protected function isCurrentUrl(Request $request, string $url): bool
     {
-        if (config('inertia-breadcrumbs.ignore_query')) {
+        if (config('inertia-breadcrumbs.ignore_query', true)) {
             return $request->url() === $url;
         }
 
