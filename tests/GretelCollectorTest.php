@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Glhd\Gretel\Support\GretelServiceProvider;
+use Illuminate\Support\Facades\Config;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
@@ -106,5 +107,52 @@ class GretelCollectorTest extends TestCase
         $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
 
         $this->assertTrue($crumbs->items()->isEmpty());
+    }
+
+        /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_ignores_the_query_string_by_default_when_determining_current_route()
+    {
+        $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(2, $crumbs->items()->count());
+        $this->assertSame([
+            [
+                'title' => 'Profile',
+                'url' => route('profile'),
+            ],
+            [
+                'title' => 'Edit profile',
+                'url' => route('profile.edit'),
+                'current' => true,
+            ],
+        ], $crumbs->toArray());
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     */
+    public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
+    {
+        Config::set('inertia-breadcrumbs.ignore_query', false);
+
+        $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(2, $crumbs->items()->count());
+        $this->assertSame([
+            [
+                'title' => 'Profile',
+                'url' => route('profile'),
+            ],
+            [
+                'title' => 'Edit profile',
+                'url' => route('profile.edit'),
+            ],
+        ], $crumbs->toArray());
     }
 }
