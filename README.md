@@ -195,6 +195,10 @@ return [
 composer test
 ```
 
+## Upgrading
+
+For notable changes see [UPGRADING](UPGRADING.md).
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
