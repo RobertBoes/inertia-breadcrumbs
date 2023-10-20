@@ -17,10 +17,10 @@ class GretelBreadcrumbsCollector extends AbstractBreadcrumbCollector
     {
         $breadcrumbs = $this->getBreadcrumbs($request);
 
-        return new BreadcrumbCollection($breadcrumbs, function (GretelBreadcrumb $breadcrumb): Breadcrumb {
+        return new BreadcrumbCollection($breadcrumbs, function (GretelBreadcrumb $breadcrumb) use ($request): Breadcrumb {
             return new Breadcrumb(
                 title: $breadcrumb->title,
-                current: $breadcrumb->is_current_page,
+                current: $this->isCurrentUrl($request, $breadcrumb->url),
                 url: $breadcrumb->url,
             );
         });
