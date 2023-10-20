@@ -109,7 +109,7 @@ class GretelCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-        /**
+    /**
      * @test
      * @define-env usesCustomMiddlewareGroup
      */
