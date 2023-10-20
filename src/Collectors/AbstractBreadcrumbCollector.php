@@ -2,6 +2,7 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
+use Illuminate\Http\Request;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
 
 abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContract
@@ -11,6 +12,15 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
         if (! $this->canUseImplementation()) {
             throw new PackageNotInstalledException(static::packageIdentifier());
         }
+    }
+
+    protected function isCurrentUrl(Request $request, string $url): bool
+    {
+        if (config('inertia-breadcrumbs.ignore_query', true)) {
+            return $request->url() === $url;
+        }
+
+        return $request->fullUrlIs($url);
     }
 
     private function canUseImplementation(): bool
