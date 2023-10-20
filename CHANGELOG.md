@@ -2,6 +2,18 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.4.0 - 2023-10-20
+
+### What's Changed
+
+- Added the option to ignore the request query string when determining the current URL by @lolsokje in https://github.com/RobertBoes/inertia-breadcrumbs/pull/9
+
+### New Contributors
+
+- @lolsokje made their first contribution in https://github.com/RobertBoes/inertia-breadcrumbs/pull/9
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.3.2...0.4.0
+
 ## v0.3.2 - 2023-07-24
 
 ### What's Changed
