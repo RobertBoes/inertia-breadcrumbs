@@ -3,8 +3,8 @@
 use RobertBoes\InertiaBreadcrumbs\Classifier\AppendAllBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Classifier\IgnoreSingleBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
-use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
+use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
 
 return [
     'middleware' => [

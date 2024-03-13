@@ -38,7 +38,7 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
 
         try {
             return Breadcrumbs::generate($route->getName(), ...array_values($route->parameters()));
-        } catch (InvalidBreadcrumbException | UnnamedRouteException) {
+        } catch (InvalidBreadcrumbException|UnnamedRouteException) {
             return collect();
         }
     }

@@ -27,7 +27,7 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @param \Illuminate\Routing\Router $router
+     * @param  \Illuminate\Routing\Router  $router
      */
     public function defineRoutes($router)
     {
@@ -53,6 +53,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_adds_middleware_to_custom_group()
@@ -69,6 +70,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env hasMiddlewareDisabled
      */
     public function it_only_adds_middleware_when_enabled_in_config()
@@ -78,6 +80,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_adds_breadcrumbs_for_current_route()
@@ -104,6 +107,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_adds_diglactic_breadcrumbs_with_additional_data()
@@ -131,6 +135,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      * @define-env usesCustomSharedKey
      */
@@ -159,6 +164,7 @@ class MiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_does_not_add_breadcrumbs_when_route_has_no_breadcrumbs()
