@@ -3,7 +3,7 @@ name: Check & fix styling
 on: [push]
 
 jobs:
-  php-cs-fixer:
+  pint:
     runs-on: ubuntu-latest
 
     steps:
