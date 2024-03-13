@@ -1,6 +1,4 @@
 .idea
-.php_cs
-.php_cs.cache
 .phpunit.result.cache
 .phpunit.cache
 build
@@ -12,5 +10,4 @@ phpstan.neon
 testbench.yaml
 vendor
 node_modules
-.php-cs-fixer.cache
 yarn-error.log
