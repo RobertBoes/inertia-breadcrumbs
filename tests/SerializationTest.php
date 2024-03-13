@@ -13,7 +13,7 @@ use RobertBoes\InertiaBreadcrumbs\Middleware;
 class SerializationTest extends TestCase
 {
     /**
-     * @param \Illuminate\Routing\Router $router
+     * @param  \Illuminate\Routing\Router  $router
      */
     public function defineRoutes($router): void
     {

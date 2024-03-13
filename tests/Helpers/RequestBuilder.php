@@ -14,11 +14,12 @@ class RequestBuilder
      * @example RequestBuilder::create('post.show', ['postId' => 1], PostShowRequest::class);
      * @example RequestBuilder::create('post.index');
      *
-     * @param string $routeName Name of the route.
-     * @param array $parameters Array of route or input parameters.
-     * @param string $class Request class.
-     * @throws \Exception If the route name doesn't exist.
+     * @param  string  $routeName  Name of the route.
+     * @param  array  $parameters  Array of route or input parameters.
+     * @param  string  $class  Request class.
      * @return Request
+     *
+     * @throws \Exception If the route name doesn't exist.
      */
     public static function create(string $routeName, array $parameters = [], string $class = Request::class)
     {

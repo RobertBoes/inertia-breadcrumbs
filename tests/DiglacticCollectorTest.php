@@ -35,7 +35,7 @@ class DiglacticCollectorTest extends TestCase
     }
 
     /**
-     * @param \Illuminate\Routing\Router $router
+     * @param  \Illuminate\Routing\Router  $router
      */
     public function defineRoutes($router)
     {
@@ -86,7 +86,6 @@ class DiglacticCollectorTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function it_collects_diglactic_breadcrumbs()
     {
@@ -136,6 +135,7 @@ class DiglacticCollectorTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_resolves_a_single_route_parameter()
@@ -182,6 +182,7 @@ class DiglacticCollectorTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
@@ -208,6 +209,7 @@ class DiglacticCollectorTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
