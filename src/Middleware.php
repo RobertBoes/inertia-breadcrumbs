@@ -28,9 +28,10 @@ class Middleware
             return $next($request);
         }
 
-        $key = config('inertia-breadcrumbs.middleware.key', 'breadcrumbs');
-
-        Inertia::share($key, $breadcrumbs);
+        Inertia::share(
+            key: config('inertia-breadcrumbs.middleware.key', 'breadcrumbs'),
+            value: $breadcrumbs,
+        );
 
         return $next($request);
     }

@@ -137,7 +137,7 @@ class MiddlewareTest extends TestCase
     public function it_does_change_key_of_breadcrumb()
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'), ['icon' => 'home.png']);
+            $trail->push('Home', route('home'));
         });
 
         $this->getJson('/home')
@@ -151,9 +151,9 @@ class MiddlewareTest extends TestCase
                         fn (Assert $page) => $page
                             ->where('title', 'Home')
                             ->where('url', route('home'))
-                            ->where('data.icon', 'home.png')
                             ->where('current', true)
                     )
+                    ->missing('breadcrumbs')
             );
     }
 
