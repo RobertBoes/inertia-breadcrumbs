@@ -27,6 +27,7 @@
         "composer/composer": "^2.1",
         "diglactic/laravel-breadcrumbs": "^8.0",
         "glhd/gretel": "^1.7",
+        "laravel/pint": "^1.14",
         "nunomaduro/collision": "^7.0",
         "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^8.0",

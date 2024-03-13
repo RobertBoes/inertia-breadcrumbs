@@ -32,7 +32,7 @@ class GretelCollectorTest extends TestCase
     }
 
     /**
-     * @param \Illuminate\Routing\Router $router
+     * @param  \Illuminate\Routing\Router  $router
      */
     public function defineRoutes($router)
     {
@@ -111,6 +111,7 @@ class GretelCollectorTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
@@ -134,6 +135,7 @@ class GretelCollectorTest extends TestCase
 
     /**
      * @test
+     *
      * @define-env usesCustomMiddlewareGroup
      */
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()

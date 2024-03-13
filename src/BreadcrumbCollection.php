@@ -13,9 +13,7 @@ class BreadcrumbCollection implements Arrayable
     public Collection $items;
 
     /**
-     *
-     * @param array|Collection $items
-     * @param null|Closure(mixed): Breadcrumb $initializer
+     * @param  null|Closure(mixed): Breadcrumb  $initializer
      * @return void
      */
     public function __construct(array|Collection $items, ?Closure $initializer = null)
