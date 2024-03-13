@@ -16,6 +16,11 @@ class MiddlewareTest extends TestCase
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
     }
 
+    public function usesCustomSharedKey($app)
+    {
+        $app->config->set('inertia-breadcrumbs.middleware.key', '_breadcrumbs');
+    }
+
     public function hasMiddlewareDisabled($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.enabled', false);
@@ -121,6 +126,34 @@ class MiddlewareTest extends TestCase
                             ->where('data.icon', 'home.png')
                             ->where('current', true)
                     )
+            );
+    }
+
+    /**
+     * @test
+     * @define-env usesCustomMiddlewareGroup
+     * @define-env usesCustomSharedKey
+     */
+    public function it_does_change_key_of_breadcrumb()
+    {
+        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
+            $trail->push('Home', route('home'));
+        });
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        '_breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('current', true)
+                    )
+                    ->missing('breadcrumbs')
             );
     }
 

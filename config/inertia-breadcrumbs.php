@@ -18,6 +18,11 @@ return [
          * The middleware is added to the 'web' group by default
          */
         'group' => 'web',
+
+        /**
+         * The key of shared breadcrumbs
+         */
+        'key' => 'breadcrumbs',
     ],
 
     /**
