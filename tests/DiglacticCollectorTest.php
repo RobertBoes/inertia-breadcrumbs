@@ -110,7 +110,6 @@ class DiglacticCollectorTest extends TestCase
             ],
             [
                 'title' => 'Crumb without link',
-                'url' => null,
             ],
         ], $crumbs->toArray());
     }
