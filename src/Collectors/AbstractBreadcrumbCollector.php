@@ -16,7 +16,7 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
 
     protected function isCurrentUrl(Request $request, ?string $url): bool
     {
-        if (\is_null($url)) {
+        if (is_null($url)) {
             return false;
         }
 
