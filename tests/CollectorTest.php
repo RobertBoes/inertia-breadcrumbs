@@ -25,10 +25,13 @@ class CollectorTest extends TestCase
     public function it_creates_breadcrumb_collection_from_breadcrumbs()
     {
         $breadcrumbs = new BreadcrumbCollection([
-            new Breadcrumb('test', false),
+            new Breadcrumb('required', false),
+            new Breadcrumb('with-url', false, 'localhost'),
+            new Breadcrumb('with-null-url', false, null),
+            new Breadcrumb('with-data', false, 'localhost', ['foo' => 'bar']),
         ]);
 
-        $this->assertSame(1, $breadcrumbs->items()->count());
+        $this->assertSame(4, $breadcrumbs->items()->count());
     }
 
     #[Test]

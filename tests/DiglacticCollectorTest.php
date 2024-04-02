@@ -84,15 +84,20 @@ class DiglacticCollectorTest extends TestCase
     #[Test]
     public function it_collects_diglactic_breadcrumbs()
     {
-        DiglacticBreadcrumbs::for('profile.edit', function (DiglacticTrail $trail) {
+        DiglacticBreadcrumbs::for('profile', function (DiglacticTrail $trail) {
             $trail->push('Profile', route('profile'));
+        });
+
+        DiglacticBreadcrumbs::for('profile.edit', function (DiglacticTrail $trail) {
+            $trail->parent('profile');
             $trail->push('Edit profile', route('profile.edit'));
+            $trail->push('Crumb without link');
         });
 
         $request = RequestBuilder::create('profile.edit');
         $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
 
-        $this->assertSame(2, $crumbs->items()->count());
+        $this->assertSame(3, $crumbs->items()->count());
         $this->assertSame([
             [
                 'title' => 'Profile',
@@ -102,6 +107,10 @@ class DiglacticCollectorTest extends TestCase
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
                 'current' => true,
+            ],
+            [
+                'title' => 'Crumb without link',
+                'url' => null,
             ],
         ], $crumbs->toArray());
     }
