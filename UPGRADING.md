@@ -8,8 +8,8 @@ We accept PRs to improve this guide.
 
 `null` breadcrumb URLs are now supported for `diglactic/laravel-breadcrumbs` and `tabuna/breadcrumbs` collectors. 
 Previously, defining a `null` URL would've thrown an exception, so this is technically a backwards-compatible change.
-However, this changes the array shape of outputted breadcrumbs, and you may want to update frontend components to match.
-Here's an example TypeScript type to illustrate:
+However, because this changes the array shape of outputted breadcrumbs, you may want to update your frontend components
+to match. Here's an example TypeScript type to illustrate:
 
 ```diff
 type Breadcrumb {
