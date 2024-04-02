@@ -62,16 +62,16 @@ No matter which third party package you're using, this package will always share
 ```json
 [
     {
-        title: "Dashboard",
-        url: "http://localhost/dashboard"
+        "title": "Dashboard",
+        "url": "http://localhost/dashboard"
     },
     {
-        title: "Profile",
-        url: "http://localhost/dashboard/profile",
-        current: true
+        "title": "Profile",
+        "url": "http://localhost/dashboard/profile",
+        "current": true
     },
     {
-        title: "Breadcrumb without URL"
+        "title": "Breadcrumb without URL"
     }
 ]
 ```
