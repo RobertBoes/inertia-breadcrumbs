@@ -4,6 +4,24 @@ This document outlines breaking changes introduced in 0.x versions and major rel
 
 We accept PRs to improve this guide.
 
+## From 0.4.x to 0.5.x
+
+`null` breadcrumb URLs are now supported for `diglactic/laravel-breadcrumbs` and `tabuna/breadcrumbs` collectors. 
+Previously, defining a `null` URL would've thrown an exception, so this is technically a backwards-compatible change.
+However, this changes the array shape of outputted breadcrumbs, and you may want to update frontend components to match.
+Here's an example TypeScript type to illustrate:
+
+```diff
+type Breadcrumb {
+    title: string;
+-   url: string;
++   url?: string;
+    current?: boolean;
+};
+
+type Breadcrumbs = Breadcrumb[];
+```
+
 ## From 0.3.x to 0.4.x
 
 ### Query string is now ignored when determining the current URL (#9)
