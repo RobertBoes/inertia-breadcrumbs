@@ -6,6 +6,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Middleware;
@@ -22,9 +23,7 @@ class SerializationTest extends TestCase
         })->name('home')->middleware([Middleware::class]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_serializes_breadcrumbs(): void
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
@@ -48,9 +47,7 @@ class SerializationTest extends TestCase
             );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_use_a_custom_serializer(): void
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {

@@ -1,6 +1,7 @@
 name: run-tests
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -13,13 +14,24 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.1, 8.2]
-        inertia: [^0.6.2]
-        laravel: [10.*]
+        php: [8.1, 8.2, 8.3]
+        inertia: [^1.0]
+        laravel: [10.*, 11.*]
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 10.*
             testbench: ^8.0
+            testbench-core: ^8.0
+            phpunit-config: phpunit.10.xml.dist
+          - laravel: 11.*
+            testbench: ^9
+            # We need at least this version because of the way gretel register their macro
+            # See: https://github.com/orchestral/testbench-core/releases/tag/v9.0.14
+            testbench-core: ^9.0.14
+            phpunit-config: phpunit.xml.dist
+        exclude:
+          - laravel: 11.*
+            php: 8.1
 
     name: PHP${{ matrix.php }} - L${{ matrix.laravel }} - Inertia ${{ matrix.inertia }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -41,8 +53,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "orchestra/testbench-core:${{ matrix.testbench-core }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/phpunit --no-coverage
+        run: vendor/bin/phpunit --no-coverage --configuration ${{ matrix.phpunit-config }}

@@ -2,6 +2,7 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\CannotCreateBreadcrumbException;
@@ -11,9 +12,7 @@ use stdClass;
 
 class CollectorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_exception_when_required_class_does_not_exist()
     {
         $this->expectException(PackageNotInstalledException::class);
@@ -22,9 +21,7 @@ class CollectorTest extends TestCase
         new InvalidDummyCollector();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_breadcrumb_collection_from_breadcrumbs()
     {
         $breadcrumbs = new BreadcrumbCollection([
@@ -34,9 +31,7 @@ class CollectorTest extends TestCase
         $this->assertSame(1, $breadcrumbs->items()->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_excpetion_with_invalid_breadcrumbs()
     {
         $this->expectException(CannotCreateBreadcrumbException::class);
@@ -47,9 +42,7 @@ class CollectorTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_exception_when_using_incorrect_initializer()
     {
         $this->expectException(CannotCreateBreadcrumbException::class);

@@ -8,6 +8,7 @@ use Diglactic\Breadcrumbs\ServiceProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
@@ -60,9 +61,7 @@ class DiglacticCollectorTest extends TestCase
         })->name('reserved-keyword-route');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_diglactic_collector_bound()
     {
         $collector = app(BreadcrumbCollectorContract::class);
@@ -70,9 +69,7 @@ class DiglacticCollectorTest extends TestCase
         $this->assertInstanceOf(DiglacticBreadcrumbsCollector::class, $collector);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
         $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
@@ -84,9 +81,7 @@ class DiglacticCollectorTest extends TestCase
         app(BreadcrumbCollectorContract::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_collects_diglactic_breadcrumbs()
     {
         DiglacticBreadcrumbs::for('profile.edit', function (DiglacticTrail $trail) {
@@ -111,9 +106,7 @@ class DiglacticCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_use_a_reserved_keyword()
     {
         DiglacticBreadcrumbs::for('reserved-keyword-route', function (DiglacticTrail $trail) {
@@ -134,10 +127,9 @@ class DiglacticCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_resolves_a_single_route_parameter()
     {
         $user = User::factory()->create();
@@ -158,9 +150,7 @@ class DiglacticCollectorTest extends TestCase
             );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_an_empty_collection_when_route_has_no_breadcrumbs()
     {
         $request = RequestBuilder::create('dashboard');
@@ -169,9 +159,7 @@ class DiglacticCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_empty_collection_for_404_page()
     {
         $request = RequestBuilder::notFound('foo');
@@ -181,10 +169,9 @@ class DiglacticCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         $user = User::factory()->create();
@@ -208,10 +195,9 @@ class DiglacticCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);

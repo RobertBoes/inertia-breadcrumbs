@@ -4,6 +4,7 @@ namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Glhd\Gretel\Support\GretelServiceProvider;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
@@ -41,9 +42,7 @@ class GretelCollectorTest extends TestCase
         $router->inertia('/dashboard', 'Dashboard')->name('dashboard');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_gretel_collector_bound()
     {
         $collector = app(BreadcrumbCollectorContract::class);
@@ -51,9 +50,7 @@ class GretelCollectorTest extends TestCase
         $this->assertInstanceOf(GretelBreadcrumbsCollector::class, $collector);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
         $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
@@ -65,9 +62,7 @@ class GretelCollectorTest extends TestCase
         app(BreadcrumbCollectorContract::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_collects_gretel_breadcrumbs()
     {
         $request = RequestBuilder::create('profile.edit');
@@ -87,9 +82,7 @@ class GretelCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_an_empty_collection_when_route_has_no_breadcrumbs()
     {
         $request = RequestBuilder::create('dashboard');
@@ -98,9 +91,7 @@ class GretelCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_empty_collection_for_404_page()
     {
         $request = RequestBuilder::notFound('foo');
@@ -110,10 +101,9 @@ class GretelCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
@@ -134,10 +124,9 @@ class GretelCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);

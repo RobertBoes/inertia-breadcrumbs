@@ -7,6 +7,7 @@ use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Middleware;
 
 class MiddlewareTest extends TestCase
@@ -36,9 +37,7 @@ class MiddlewareTest extends TestCase
         })->name('home')->middleware('custom');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_adds_middleware_to_web_group()
     {
         $this->assertEquals(
@@ -52,10 +51,9 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_adds_middleware_to_custom_group()
     {
         $this->assertEquals(
@@ -69,20 +67,18 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env hasMiddlewareDisabled
      */
+    #[Test]
     public function it_only_adds_middleware_when_enabled_in_config()
     {
         $this->assertEmpty($this->app->make(Router::class)->getMiddleware());
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_adds_breadcrumbs_for_current_route()
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
@@ -106,10 +102,9 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_adds_diglactic_breadcrumbs_with_additional_data()
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
@@ -134,11 +129,10 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      * @define-env usesCustomSharedKey
      */
+    #[Test]
     public function it_does_change_key_of_breadcrumb()
     {
         Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
@@ -163,10 +157,9 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_does_not_add_breadcrumbs_when_route_has_no_breadcrumbs()
     {
         $this->getJson('/home')
