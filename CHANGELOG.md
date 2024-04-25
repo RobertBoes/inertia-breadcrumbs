@@ -2,6 +2,21 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.5.0 - 2024-04-25
+
+### What's Changed
+
+* feat: can custom shared key by @squiaios in https://github.com/RobertBoes/inertia-breadcrumbs/pull/10
+* feat: upgrade inertiajs/inertia-laravel version by @squiaios in https://github.com/RobertBoes/inertia-breadcrumbs/pull/11
+* feat: introduce pint by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/13
+* Support Laravel 11 by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/19
+
+### New Contributors
+
+* @squiaios made their first contribution in https://github.com/RobertBoes/inertia-breadcrumbs/pull/10
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.4.0...0.5.0
+
 ## v0.4.0 - 2023-10-20
 
 ### What's Changed
