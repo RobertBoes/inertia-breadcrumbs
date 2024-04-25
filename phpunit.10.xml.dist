@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.1/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
     backupGlobals="false"
     backupStaticProperties="false"
     bootstrap="vendor/autoload.php"
@@ -21,6 +21,9 @@
         </testsuite>
     </testsuites>
     <coverage>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
         <report>
             <html outputDirectory="build/coverage"/>
             <text outputFile="build/coverage.txt"/>
@@ -43,9 +46,4 @@
         <env name="SEND_VIEWS_TO_RAY" value="(false)"/>
         <env name="SEND_EXCEPTIONS_TO_RAY" value="(true)"/>
     </php>
-    <source>
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-    </source>
 </phpunit>
