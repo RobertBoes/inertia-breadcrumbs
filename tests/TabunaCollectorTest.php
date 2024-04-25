@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
@@ -41,9 +42,7 @@ class TabunaCollectorTest extends TestCase
         })->name('reserved-keyword-route');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_tabuna_collector_bound()
     {
         $collector = app(BreadcrumbCollectorContract::class);
@@ -51,9 +50,7 @@ class TabunaCollectorTest extends TestCase
         $this->assertInstanceOf(TabunaBreadcrumbsCollector::class, $collector);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
         $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
@@ -65,9 +62,7 @@ class TabunaCollectorTest extends TestCase
         app(BreadcrumbCollectorContract::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_collects_tabuna_breadcrumbs()
     {
         TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
@@ -92,9 +87,7 @@ class TabunaCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_use_a_reserved_keyword()
     {
         TabunaBreadcrumbs::for('reserved-keyword-route', function (TabunaTrail $trail) {
@@ -114,9 +107,7 @@ class TabunaCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_an_empty_collection_when_route_has_no_breadcrumbs()
     {
         $request = RequestBuilder::create('dashboard');
@@ -125,9 +116,7 @@ class TabunaCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_empty_collection_for_404_page()
     {
         $request = RequestBuilder::notFound('foo');
@@ -137,10 +126,9 @@ class TabunaCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
@@ -166,10 +154,9 @@ class TabunaCollectorTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @define-env usesCustomMiddlewareGroup
      */
+    #[Test]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);
