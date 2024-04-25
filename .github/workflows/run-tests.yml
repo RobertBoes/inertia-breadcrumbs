@@ -21,13 +21,9 @@ jobs:
         include:
           - laravel: 10.*
             testbench: ^8.0
-            testbench-core: ^8.0
             phpunit-config: phpunit.10.xml.dist
           - laravel: 11.*
             testbench: ^9
-            # We need at least this version because of the way gretel register their macro
-            # See: https://github.com/orchestral/testbench-core/releases/tag/v9.0.14
-            testbench-core: ^9.0.14
             phpunit-config: phpunit.xml.dist
         exclude:
           - laravel: 11.*
@@ -53,7 +49,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "orchestra/testbench-core:${{ matrix.testbench-core }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
