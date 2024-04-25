@@ -18,6 +18,7 @@ jobs:
         inertia: [^0.6.2, ^1.0]
         laravel: [10.*, 11.*]
         stability: [prefer-lowest, prefer-stable]
+        phpunit-config: [phpunit.xml.dist]
         include:
           - laravel: 10.*
             testbench: ^8.0
@@ -25,6 +26,11 @@ jobs:
           - laravel: 11.*
             testbench: ^9.0
             phpunit-config: phpunit.xml.dist
+        exclude:
+          - laravel: 11.*
+            php: 8.1
+          - inertia: ^0.6.2
+            php: 8.3
 
     name: PHP${{ matrix.php }} - L${{ matrix.laravel }} - Inertia ${{ matrix.inertia }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
