@@ -35,7 +35,7 @@ class CollectorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_an_excpetion_with_invalid_breadcrumbs()
+    public function it_throws_an_exception_with_invalid_breadcrumbs()
     {
         $this->expectException(CannotCreateBreadcrumbException::class);
         new BreadcrumbCollection([
