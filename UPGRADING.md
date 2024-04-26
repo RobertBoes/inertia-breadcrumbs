@@ -4,6 +4,31 @@ This document outlines breaking changes introduced in 0.x versions and major rel
 
 We accept PRs to improve this guide.
 
+## From 0.4.x to 0.5.x
+
+### Upgrading dependencies
+
+This release adds support for Laravel 11. This package now also requires `inertiajs/inertia-laravel: ^1.0`.
+
+### Custom shared key
+
+@squiaios added the ability to change the prop key used to share the breadcrumbs.
+By default these are shared using the `breadcrumbs` key.
+It's recommended to keep your config up-to-date with this change:
+
+```diff
+return [
+    'middleware' => [
+        // ...
++
++        /**
++         * The key of shared breadcrumbs
++         */
++        'key' => 'breadcrumbs',
+    ],
+];
+```
+
 ## From 0.3.x to 0.4.x
 
 ### Query string is now ignored when determining the current URL (#9)
