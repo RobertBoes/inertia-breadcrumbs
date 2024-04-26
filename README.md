@@ -76,7 +76,8 @@ No matter which third party package you're using, this package will always share
 ]
 ```
 
-Note that due to package differences, URLs are always present when using `glhd/gretel`, but are otherwise optional.  
+> [!NOTE]
+> Note that due to package differences, URLs are always present when using `glhd/gretel`, but are otherwise optional.  
 
 An example to render your breadcrumbs in Vue 3 could look like the following:
 
@@ -208,9 +209,6 @@ For notable changes see [UPGRADING](UPGRADING.md).
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## TODO
-- [ ] Create Vue 2/3 components
 
 ## Contributing
 
