@@ -62,16 +62,21 @@ No matter which third party package you're using, this package will always share
 ```json
 [
     {
-        title: "Dashboard",
-        url: "http://localhost/dashboard",
+        "title": "Dashboard",
+        "url": "http://localhost/dashboard"
     },
     {
-        title: "Profile",
-        url: "http://localhost/dashboard/profile",
-        current: true,
+        "title": "Profile",
+        "url": "http://localhost/dashboard/profile",
+        "current": true
+    },
+    {
+        "title": "Breadcrumb without URL"
     }
 ]
 ```
+
+Note that due to package differences, URLs are always present when using `glhd/gretel`, but are otherwise optional.  
 
 An example to render your breadcrumbs in Vue 3 could look like the following:
 
@@ -81,12 +86,13 @@ An example to render your breadcrumbs in Vue 3 could look like the following:
         <ol>
             <li v-for="page in breadcrumbs">
                 <div>
-                    <span v-if="page ==='/'">/</span>
+                    <span v-if="page === '/'">/</span>
                     <a
-                        v-else
+                        v-else-if="page.url"
                         :href="page.url"
                         :class="{ 'border-b border-blue-400': page.current }"
                     >{{ page.title }}</a>
+                    <span v-else>{{ page.title }}</span>
                 </div>
             </li>
         </ol>

@@ -14,8 +14,12 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
         }
     }
 
-    protected function isCurrentUrl(Request $request, string $url): bool
+    protected function isCurrentUrl(Request $request, ?string $url): bool
     {
+        if (is_null($url)) {
+            return false;
+        }
+
         if (config('inertia-breadcrumbs.ignore_query', true)) {
             return $request->url() === $url;
         }

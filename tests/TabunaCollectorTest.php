@@ -65,15 +65,20 @@ class TabunaCollectorTest extends TestCase
     #[Test]
     public function it_collects_tabuna_breadcrumbs()
     {
-        TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
+        TabunaBreadcrumbs::for('profile', function (TabunaTrail $trail) {
             $trail->push('Profile', route('profile'));
+        });
+
+        TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
+            $trail->parent('profile');
             $trail->push('Edit profile', route('profile.edit'));
+            $trail->push('Crumb without link');
         });
 
         $request = RequestBuilder::create('profile.edit');
         $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
 
-        $this->assertSame(2, $crumbs->items()->count());
+        $this->assertSame(3, $crumbs->items()->count());
         $this->assertSame([
             [
                 'title' => 'Profile',
@@ -83,6 +88,9 @@ class TabunaCollectorTest extends TestCase
                 'title' => 'Edit profile',
                 'url' => route('profile.edit'),
                 'current' => true,
+            ],
+            [
+                'title' => 'Crumb without link',
             ],
         ], $crumbs->toArray());
     }
