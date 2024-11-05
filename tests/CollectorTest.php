@@ -18,7 +18,7 @@ class CollectorTest extends TestCase
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('dummy/breadcrumbs is not installed');
 
-        new InvalidDummyCollector();
+        new InvalidDummyCollector;
     }
 
     #[Test]

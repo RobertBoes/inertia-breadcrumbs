@@ -28,7 +28,7 @@ class BreadcrumbCollection implements Arrayable
                     return $result;
                 }
 
-                throw new CannotCreateBreadcrumbException();
+                throw new CannotCreateBreadcrumbException;
             });
     }
 
