@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v0.7.0 - 2025-02-28
+
+### What's Changed
+
+* Accept laravel inertia 2.0 by @squiaios in https://github.com/RobertBoes/inertia-breadcrumbs/pull/22
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.6.0...0.7.0
+
 ## v0.6.0 - 2024-04-26
 
 ### What's Changed
