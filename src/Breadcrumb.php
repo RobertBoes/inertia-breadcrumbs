@@ -4,7 +4,7 @@ namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-readonly class Breadcrumb implements Arrayable
+class Breadcrumb implements Arrayable
 {
     public function __construct(
         private string $title,
