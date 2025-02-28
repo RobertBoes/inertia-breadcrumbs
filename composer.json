@@ -28,7 +28,7 @@
         "diglactic/laravel-breadcrumbs": "^8.0|^9.0|^10.0",
         "glhd/gretel": "^1.7",
         "laravel/pint": "^1.14",
-        "larastan/larastan": "^2.0",
+        "larastan/larastan": "^2.0|^3.0",
         "orchestra/testbench": "^8.0|^9",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
