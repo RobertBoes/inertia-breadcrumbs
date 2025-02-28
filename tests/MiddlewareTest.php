@@ -72,7 +72,7 @@ class MiddlewareTest extends TestCase
     #[Test]
     public function it_only_adds_middleware_when_enabled_in_config()
     {
-        $this->assertEmpty($this->app->make(Router::class)->getMiddleware());
+        $this->assertEmpty($this->app->make(Router::class)->getMiddlewareGroups());
     }
 
     /**
