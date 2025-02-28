@@ -37,8 +37,8 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
         /** @var Router $router */
         $router = $this->app->make(Router::class);
         $router->pushMiddlewareToGroup(
-            config('inertia-breadcrumbs.middleware.group', 'web'),
-            Middleware::class
+            group: config('inertia-breadcrumbs.middleware.group', 'web'),
+            middleware: Middleware::class,
         );
     }
 }
