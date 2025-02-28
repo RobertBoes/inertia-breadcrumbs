@@ -19,7 +19,7 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
             ->hasConfigFile();
     }
 
-    public function packageRegistered()
+    public function packageRegistered(): void
     {
         $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', DiglacticBreadcrumbsCollector::class));
         $this->app->bind(ClassifierContract::class, config('inertia-breadcrumbs.classifier', AppendAllBreadcrumbs::class));
@@ -28,14 +28,17 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
         });
     }
 
-    public function packageBooted()
+    public function packageBooted(): void
     {
         if (! config('inertia-breadcrumbs.middleware.enabled', true)) {
             return;
         }
 
-        /** @var Router */
+        /** @var Router $router */
         $router = $this->app->make(Router::class);
-        $router->pushMiddlewareToGroup(config('inertia-breadcrumbs.middleware.group', 'web'), Middleware::class);
+        $router->pushMiddlewareToGroup(
+            config('inertia-breadcrumbs.middleware.group', 'web'),
+            Middleware::class
+        );
     }
 }

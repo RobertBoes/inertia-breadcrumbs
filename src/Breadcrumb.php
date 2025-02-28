@@ -4,23 +4,14 @@ namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-class Breadcrumb implements Arrayable
+readonly class Breadcrumb implements Arrayable
 {
-    private string $title;
-
-    private bool $current;
-
-    private ?string $url;
-
-    private ?array $data;
-
-    public function __construct(string $title, ?bool $current, ?string $url = null, ?array $data = null)
-    {
-        $this->title = $title;
-        $this->current = $current ?? false;
-        $this->url = $url;
-        $this->data = $data;
-    }
+    public function __construct(
+        private string $title,
+        private bool $current = false,
+        private ?string $url = null,
+        private ?array $data = null
+    ) {}
 
     public function title(): string
     {

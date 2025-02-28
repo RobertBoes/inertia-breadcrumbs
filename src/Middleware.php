@@ -10,15 +10,10 @@ use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 
 class Middleware
 {
-    private BreadcrumbCollectorContract $collector;
-
-    private ClassifierContract $classifier;
-
-    public function __construct(BreadcrumbCollectorContract $collector, ClassifierContract $classifier)
-    {
-        $this->collector = $collector;
-        $this->classifier = $classifier;
-    }
+    public function __construct(
+        private readonly BreadcrumbCollectorContract $collector,
+        private readonly ClassifierContract $classifier
+    ) {}
 
     public function handle(Request $request, Closure $next)
     {
