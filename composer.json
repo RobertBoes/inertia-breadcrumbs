@@ -29,7 +29,7 @@
         "glhd/gretel": "^1.9",
         "laravel/pint": "^1.14",
         "larastan/larastan": "^2.0|^3.0",
-        "orchestra/testbench": "^8.0|^9",
+        "orchestra/testbench": "^8.0|^9|^10",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
@@ -39,7 +39,7 @@
         "tabuna/breadcrumbs": "^4.0"
     },
     "conflict": {
-        "orchestra/testbench-core": ">=9,<9.0.14"
+        "orchestra/testbench-core": "<9.0.14"
     },
     "suggest": {
         "diglactic/laravel-breadcrumbs": "Manage and configure breadcrumbs with diglactic/laravel-breadcrumbs",
