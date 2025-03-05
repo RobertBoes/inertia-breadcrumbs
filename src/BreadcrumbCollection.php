@@ -42,7 +42,6 @@ class BreadcrumbCollection implements Arrayable
 
     public function toArray()
     {
-        return $this->items
-            ->toArray();
+        return $this->items->toArray();
     }
 }

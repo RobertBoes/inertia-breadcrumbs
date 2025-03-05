@@ -11,7 +11,7 @@ class InertiaBreadcrumbs
      */
     public static $serializeUsingCallback;
 
-    public static function serializeUsing(callable $callback)
+    public static function serializeUsing(callable $callback): void
     {
         static::$serializeUsingCallback = $callback;
     }
