@@ -21,12 +21,15 @@ jobs:
         include:
           - laravel: 10.*
             testbench: ^8
+            larastan: ^2
             phpunit-config: phpunit.10.xml.dist
           - laravel: 11.*
             testbench: ^9
+            larastan: ^2
             phpunit-config: phpunit.xml.dist
           - laravel: 12.*
             testbench: ^10
+            larastan: ^3
             phpunit-config: phpunit.xml.dist
         exclude:
           - laravel: 11.*
@@ -57,7 +60,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "larastan/larastan:${{ matrix.larastan }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
