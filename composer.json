@@ -38,9 +38,6 @@
         "spatie/ray": "^1.33",
         "tabuna/breadcrumbs": "^4.0"
     },
-    "conflict": {
-        "orchestra/testbench-core": "<9.0.14"
-    },
     "suggest": {
         "diglactic/laravel-breadcrumbs": "Manage and configure breadcrumbs with diglactic/laravel-breadcrumbs",
         "glhd/gretel": "Manage and configure breadcrumbs with glhd/gretel",
