@@ -24,7 +24,7 @@ jobs:
             larastan: ^2
             phpunit-config: phpunit.10.xml.dist
           - laravel: 11.*
-            testbench: ^9
+            testbench: ^9.0.1
             larastan: ^2
             phpunit-config: phpunit.xml.dist
           - laravel: 12.*

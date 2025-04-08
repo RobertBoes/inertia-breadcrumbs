@@ -25,13 +25,6 @@ class GretelCollectorTest extends TestCase
         return GretelServiceProvider::class;
     }
 
-    protected function getPackageProviders($app)
-    {
-        return array_merge(parent::getPackageProviders($app), [
-            GretelServiceProvider::class,
-        ]);
-    }
-
     /**
      * @param  \Illuminate\Routing\Router  $router
      */
