@@ -6,6 +6,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
@@ -127,10 +128,8 @@ class ClosureCollectorTest extends TestCase
         $this->assertSame('New', $crumbs->items()->first()->title());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_infers_route_name_from_current_request()
     {
         $this->get('/users/42');
@@ -142,10 +141,8 @@ class ClosureCollectorTest extends TestCase
         $this->assertTrue(app(InertiaBreadcrumbs::class)->has('users.show'));
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_works_through_full_http_pipeline()
     {
         app(InertiaBreadcrumbs::class)->for('users.show', fn (string $user) => [

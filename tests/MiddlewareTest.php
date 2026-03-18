@@ -5,6 +5,7 @@ namespace RobertBoes\InertiaBreadcrumbs\Tests;
 use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
@@ -67,10 +68,8 @@ class MiddlewareTest extends TestCase
         $this->assertContains(Middleware::class, $groups['web']);
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_middleware_to_custom_group()
     {
         $groups = $this->app->make(Router::class)->getMiddlewareGroups();
@@ -79,10 +78,8 @@ class MiddlewareTest extends TestCase
         $this->assertContains(Middleware::class, $groups['custom']);
     }
 
-    /**
-     * @define-env hasMiddlewareDisabled
-     */
     #[Test]
+    #[DefineEnvironment('hasMiddlewareDisabled')]
     public function it_only_adds_middleware_when_enabled_in_config()
     {
         $groups = $this->app->make(Router::class)->getMiddlewareGroups();
@@ -91,10 +88,8 @@ class MiddlewareTest extends TestCase
         $this->assertNotContains(Middleware::class, $webMiddleware);
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_breadcrumbs_for_current_route()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -117,10 +112,8 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_breadcrumbs_with_additional_data()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -144,11 +137,9 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     * @define-env usesCustomSharedKey
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesCustomSharedKey')]
     public function it_does_change_key_of_breadcrumb()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -172,10 +163,8 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_shares_null_when_route_has_no_breadcrumbs()
     {
         $this->getJson('/home')
@@ -187,10 +176,8 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_breadcrumbs_with_cached_routes()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -217,10 +204,8 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_collects_breadcrumbs_with_cached_routes_via_collector()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -242,11 +227,9 @@ class MiddlewareTest extends TestCase
         $this->assertSame(1, $crumbs->items()->count());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     * @define-env usesAlwaysShareStrategy
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesAlwaysShareStrategy')]
     public function it_shares_breadcrumbs_with_always_strategy()
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
@@ -269,11 +252,9 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     * @define-env usesDeferredShareStrategy
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesDeferredShareStrategy')]
     public function it_shares_breadcrumbs_with_deferred_strategy()
     {
         if (! method_exists(Assert::class, 'loadDeferredProps')) {

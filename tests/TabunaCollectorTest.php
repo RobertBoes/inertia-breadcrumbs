@@ -6,6 +6,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
@@ -164,10 +165,8 @@ class TabunaCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_resolves_breadcrumbs_defined_via_route_macro()
     {
         $this->getJson('/macro-test')
@@ -186,10 +185,8 @@ class TabunaCollectorTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         TabunaBreadcrumbs::for('profile.edit', function (TabunaTrail $trail) {
@@ -214,10 +211,8 @@ class TabunaCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);
