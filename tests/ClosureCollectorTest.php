@@ -24,7 +24,7 @@ class ClosureCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app): void
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
-        $app->make(\Illuminate\Routing\Router::class)->middlewareGroup('custom', []);
+        $app->make(Router::class)->middlewareGroup('custom', []);
     }
 
     /**
