@@ -24,11 +24,12 @@ You can publish the config file with:
 php artisan vendor:publish --tag="inertia-breadcrumbs-config"
 ```
 
-Next step is to install one of the following packages to manage your breadcrumbs:
+Next step is to install one of the following packages to manage your breadcrumbs, or use the built-in closure collector:
 
 - [diglactic/laravel-breadcrumbs](https://github.com/diglactic/laravel-breadcrumbs)
 - [tabuna/breadcrumbs](https://github.com/tabuna/breadcrumbs)
 - [glhd/gretel](https://github.com/glhd/gretel)
+- Built-in closure collector (no additional package required)
 
 Configure your breadcrumbs as explained by the package
 
@@ -53,6 +54,13 @@ use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
 
 return [
     'collector' => GretelBreadcrumbsCollector::class,
+];
+
+// Built-in closure collector
+use RobertBoes\InertiaBreadcrumbs\Collectors\ClosureBreadcrumbsCollector;
+
+return [
+    'collector' => ClosureBreadcrumbsCollector::class,
 ];
 ```
 
@@ -81,50 +89,104 @@ No matter which third party package you're using, this package will always share
 
 An example to render your breadcrumbs in Vue 3 could look like the following:
 
-```js
+```vue
 <template>
-    <nav v-if="breadcrumbs">
+    <nav v-if="$page.props.breadcrumbs">
         <ol>
-            <li v-for="page in breadcrumbs">
-                <div>
-                    <span v-if="page === '/'">/</span>
-                    <a
-                        v-else-if="page.url"
-                        :href="page.url"
-                        :class="{ 'border-b border-blue-400': page.current }"
-                    >{{ page.title }}</a>
-                    <span v-else>{{ page.title }}</span>
-                </div>
+            <li v-for="crumb in $page.props.breadcrumbs" :key="crumb.title">
+                <a
+                    v-if="crumb.url"
+                    :href="crumb.url"
+                    :class="{ 'border-b border-blue-400': crumb.current }"
+                >{{ crumb.title }}</a>
+                <span v-else>{{ crumb.title }}</span>
             </li>
         </ol>
     </nav>
 </template>
-
-<script>
-import { usePage } from '@inertiajs/inertia-vue3'
-import { computed } from 'vue'
-
-export default {
-    setup() {
-        // Insert an element between all elements, insertBetween([1, 2, 3], '/') results in [1, '/', 2, '/', 3]
-        const insertBetween = (items, insertion) => {
-            return items.flatMap(
-                (value, index, array) =>
-                    array.length - 1 !== index
-                        ? [value, insertion]
-                        : value,
-            )
-        }
-
-        const breadcrumbs = computed(() => insertBetween(usePage().props.value.breadcrumbs || [], '/'))
-
-        return {
-            breadcrumbs,
-        }
-    },
-}
-</script>
 ```
+
+## Using the closure collector
+
+If you don't want to install a third-party breadcrumb package, you can use the built-in closure collector. This allows you to define breadcrumbs directly using closures, either in a service provider or in your controllers.
+
+Update your `config/inertia-breadcrumbs.php` to use the `ClosureBreadcrumbsCollector`:
+```php
+use RobertBoes\InertiaBreadcrumbs\Collectors\ClosureBreadcrumbsCollector;
+
+return [
+    'collector' => ClosureBreadcrumbsCollector::class,
+];
+```
+
+Then define your breadcrumbs by route name. You can do this in a service provider:
+```php
+<?php
+
+namespace App\Providers;
+
+use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
+use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $breadcrumbs = app(InertiaBreadcrumbs::class);
+
+        $breadcrumbs->for('users.index', fn () => [
+            Breadcrumb::make('Users', route('users.index')),
+        ]);
+
+        $breadcrumbs->for('users.show', fn (User $user) => [
+            Breadcrumb::make('Users', route('users.index')),
+            Breadcrumb::make($user->name, route('users.show', $user)),
+        ]);
+    }
+}
+```
+
+Or directly in your controllers. When called without a route name, the current route name is automatically inferred from the request:
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
+use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
+
+class UserController extends Controller
+{
+    public function show(User $user, InertiaBreadcrumbs $breadcrumbs)
+    {
+        $breadcrumbs->for(fn (User $user) => [
+            Breadcrumb::make('Users', route('users.index')),
+            Breadcrumb::make($user->name, route('users.show', $user)),
+        ]);
+
+        return inertia('Users/Show', ['user' => $user]);
+    }
+}
+```
+
+Route parameters are automatically passed to the closure based on the current route. The `current` property is automatically determined by comparing the breadcrumb URL with the current request URL.
+
+## Share strategy
+
+Controls how breadcrumbs are shared with Inertia. You can configure this in `config/inertia-breadcrumbs.php`:
+
+```php
+use RobertBoes\InertiaBreadcrumbs\ShareStrategy;
+
+return [
+    'share' => ShareStrategy::Default,
+];
+```
+
+- `ShareStrategy::Default` — Standard shared prop, excluded during partial reloads unless explicitly requested
+- `ShareStrategy::Always` — Always included in the response, even during partial reloads
+- `ShareStrategy::Deferred` — Excluded from the initial page load, automatically fetched after the page renders
 
 ## Using a classifier
 
@@ -162,13 +224,14 @@ in the `boot` method of a service provider:
 
 namespace App\Providers;
 
+use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        InertiaBreadcrumbs::serializeUsing(fn (Breadcrumb $breadcrumb) => [
+        app(InertiaBreadcrumbs::class)->serializeUsing(fn (Breadcrumb $breadcrumb) => [
             'name' => $breadcrumb->title(),
             'href' => $breadcrumb->url(),
             'active' => $breadcrumb->current(),

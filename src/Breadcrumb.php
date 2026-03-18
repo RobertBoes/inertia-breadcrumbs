@@ -4,6 +4,8 @@ namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Contracts\Support\Arrayable;
 
+/** @implements Arrayable<string, mixed> */
+readonly class Breadcrumb implements Arrayable
 {
     /**
      * @param  ?array<string, mixed>  $data
@@ -14,6 +16,14 @@ use Illuminate\Contracts\Support\Arrayable;
         private ?string $url = null,
         private ?array $data = null
     ) {}
+
+    /**
+     * @param  ?array<string, mixed>  $data
+     */
+    public static function make(string $title, ?string $url = null, ?array $data = null): self
+    {
+        return new self(title: $title, url: $url, data: $data);
+    }
 
     public function title(): string
     {
@@ -38,8 +48,10 @@ use Illuminate\Contracts\Support\Arrayable;
 
     public function toArray(): array
     {
-        if (InertiaBreadcrumbs::$serializeUsingCallback) {
-            return call_user_func(InertiaBreadcrumbs::$serializeUsingCallback, $this);
+        $serializer = app(InertiaBreadcrumbs::class);
+
+        if ($serializer->hasCustomSerializer()) {
+            return $serializer->serialize($this);
         }
 
         return array_filter([

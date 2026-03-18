@@ -54,7 +54,7 @@ class SerializationTest extends TestCase
             $trail->push('Home', route('home'));
         });
 
-        InertiaBreadcrumbs::serializeUsing(fn (Breadcrumb $breadcrumb) => [
+        app(InertiaBreadcrumbs::class)->serializeUsing(fn (Breadcrumb $breadcrumb) => [
             'name' => $breadcrumb->title(),
             'href' => $breadcrumb->url(),
             'active' => $breadcrumb->current(),

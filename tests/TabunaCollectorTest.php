@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Illuminate\Support\Facades\Config;
+use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
@@ -17,6 +18,15 @@ class TabunaCollectorTest extends TestCase
 {
     use SetupCollector;
 
+    protected function setUp(): void
+    {
+        // Clear Gretel's 'breadcrumbs' macro if it leaked from a previous test class,
+        // so Tabuna's service provider can register its own version.
+        \Illuminate\Routing\Route::flushMacros();
+
+        parent::setUp();
+    }
+
     protected function provider(): string
     {
         return BreadcrumbsServiceProvider::class;
@@ -27,6 +37,11 @@ class TabunaCollectorTest extends TestCase
         return TabunaBreadcrumbsCollector::class;
     }
 
+    public function usesCustomMiddlewareGroup($app)
+    {
+        $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+    }
+
     /**
      * @param  \Illuminate\Routing\Router  $router
      */
@@ -35,6 +50,11 @@ class TabunaCollectorTest extends TestCase
         $router->inertia('/profile', 'Profile/Index')->name('profile');
         $router->inertia('/profile/edit', 'Profile/Edit')->name('profile.edit');
         $router->inertia('/dashboard', 'Dashboard')->name('dashboard');
+
+        $router->get('/macro-test', function () {
+            return inertia('MacroTest', []);
+        })->name('macro.test')->middleware('custom')->breadcrumbs(fn (TabunaTrail $trail) => $trail->push('Macro Test', route('macro.test')));
+
         $router->get('/{name}', function (string $name) {
             return inertia('Name', [
                 'name' => $name,
@@ -53,8 +73,8 @@ class TabunaCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
-            return false;
+        $this->app->instance(\RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker::class, new class extends \RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker {
+            public function __invoke(string $class): bool { return false; }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('tabuna/breadcrumbs is not installed');
@@ -131,6 +151,28 @@ class TabunaCollectorTest extends TestCase
         $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
 
         $this->assertTrue($crumbs->items()->isEmpty());
+    }
+
+    /**
+     * @define-env usesCustomMiddlewareGroup
+     */
+    #[Test]
+    public function it_resolves_breadcrumbs_defined_via_route_macro()
+    {
+        $this->getJson('/macro-test')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('MacroTest')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Macro Test')
+                            ->where('url', route('macro.test'))
+                            ->where('current', true)
+                    )
+            );
     }
 
     /**

@@ -17,15 +17,19 @@ class Middleware
 
     public function handle(Request $request, Closure $next): mixed
     {
-        $breadcrumbs = $this->breadcrumbs($request);
+        $resolver = fn () => $this->breadcrumbs($request)?->toArray();
 
-        if (is_null($breadcrumbs)) {
-            return $next($request);
-        }
+        $strategy = config('inertia-breadcrumbs.share', ShareStrategy::Default);
+
+        $value = match ($strategy) {
+            ShareStrategy::Always => Inertia::always($resolver),
+            ShareStrategy::Deferred => Inertia::defer($resolver),
+            default => $resolver,
+        };
 
         Inertia::share(
             key: config('inertia-breadcrumbs.middleware.key', 'breadcrumbs'),
-            value: $breadcrumbs,
+            value: $value,
         );
 
         return $next($request);

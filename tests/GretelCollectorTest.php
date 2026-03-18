@@ -46,8 +46,8 @@ class GretelCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
-            return false;
+        $this->app->instance(\RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker::class, new class extends \RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker {
+            public function __invoke(string $class): bool { return false; }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('glhd/gretel is not installed');

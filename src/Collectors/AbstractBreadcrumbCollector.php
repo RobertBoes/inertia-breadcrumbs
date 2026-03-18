@@ -4,12 +4,13 @@ namespace RobertBoes\InertiaBreadcrumbs\Collectors;
 
 use Illuminate\Http\Request;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 
 abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContract
 {
-    public function __construct()
+    public function __construct(private readonly PackageExistenceChecker $packageChecker)
     {
-        if (! $this->canUseImplementation()) {
+        if (! ($this->packageChecker)(static::requiredClass())) {
             throw new PackageNotInstalledException(static::packageIdentifier());
         }
     }
@@ -25,11 +26,6 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
         }
 
         return $request->fullUrlIs($url);
-    }
-
-    private function canUseImplementation(): bool
-    {
-        return app('inertia-breadcrumbs-package-existence')(static::requiredClass());
     }
 
     abstract public static function requiredClass(): string;
