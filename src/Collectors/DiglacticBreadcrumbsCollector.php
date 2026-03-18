@@ -30,6 +30,7 @@ class DiglacticBreadcrumbsCollector extends AbstractBreadcrumbCollector
         });
     }
 
+    /** @return Collection<int, \stdClass> */
     private function getBreadcrumbs(Request $request): Collection
     {
         if (! ($route = $request->route()) instanceof Route) {

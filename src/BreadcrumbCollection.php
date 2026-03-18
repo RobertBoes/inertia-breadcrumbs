@@ -7,14 +7,15 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\CannotCreateBreadcrumbException;
 
+/** @implements Arrayable<int, array<string, mixed>> */
 class BreadcrumbCollection implements Arrayable
 {
     /** @var Collection<int, Breadcrumb> */
-    public Collection $items;
+    private Collection $items;
 
     /**
-     * @param  null|Closure(mixed): Breadcrumb  $initializer
-     * @return void
+     * @param  array<int, mixed>|Collection<int, mixed>  $items
+     * @param  null|Closure(mixed): mixed  $initializer
      */
     public function __construct(array|Collection $items, ?Closure $initializer = null)
     {
@@ -40,7 +41,7 @@ class BreadcrumbCollection implements Arrayable
         return $this->items->values();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->items->toArray();
     }

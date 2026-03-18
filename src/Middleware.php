@@ -15,7 +15,7 @@ class Middleware
         private readonly ClassifierContract $classifier
     ) {}
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $breadcrumbs = $this->breadcrumbs($request);
 

@@ -4,8 +4,10 @@ namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-class Breadcrumb implements Arrayable
 {
+    /**
+     * @param  ?array<string, mixed>  $data
+     */
     public function __construct(
         private string $title,
         private bool $current = false,
@@ -28,6 +30,7 @@ class Breadcrumb implements Arrayable
         return $this->current;
     }
 
+    /** @return ?array<string, mixed> */
     public function data(): ?array
     {
         return $this->data;
