@@ -59,35 +59,47 @@ jobs:
           )
 
       - name: Execute tests
-        run: vendor/bin/phpunit --no-coverage --configuration ${{ matrix.phpunit-config }} --display-skipped --log-junit build/report.junit.xml
+        id: tests
+        run: |
+          mkdir -p build
+          vendor/bin/phpunit --no-coverage --configuration ${{ matrix.phpunit-config }} --display-skipped 2>&1 | tee build/test-output.txt
+          exit ${PIPESTATUS[0]}
 
       - name: Report skipped tests
-        if: always()
+        if: always() && steps.tests.outcome != 'cancelled'
         env:
           MATRIX_LABEL: PHP${{ matrix.php }} - L${{ matrix.laravel }} - Inertia ${{ matrix.inertia }} - ${{ matrix.stability }}
         run: |
-          if [ ! -f build/report.junit.xml ]; then exit 0; fi
+          if [ ! -f build/test-output.txt ]; then exit 0; fi
           php -r '
-            $xml = simplexml_load_file("build/report.junit.xml");
-            if (!$xml) exit(0);
-            $skipped = [];
-            foreach ($xml->xpath("//testcase[skipped]") as $tc) {
-              $skipped[] = [
-                "test" => $tc["class"] . "::" . $tc["name"],
-                "reason" => trim((string) $tc->skipped) ?: "No reason given",
-              ];
-            }
-            $total = count($xml->xpath("//testcase"));
-            $file = getenv("GITHUB_STEP_SUMMARY");
+            $output = file_get_contents("build/test-output.txt");
             $label = getenv("MATRIX_LABEL");
+            $file = getenv("GITHUB_STEP_SUMMARY");
+
+            preg_match("/Tests: (\d+)/", $output, $totalMatch);
+            preg_match("/Skipped: (\d+)/", $output, $skipMatch);
+            $total = $totalMatch[1] ?? 0;
+            $skipCount = $skipMatch[1] ?? 0;
+
+            if ($skipCount == 0) {
+              file_put_contents($file, "### ✅ $label — All $total tests ran\n", FILE_APPEND);
+              exit(0);
+            }
+
+            $skipped = [];
+            if (preg_match("/skipped tests?:\s*\n(.*?)(?=\nOK|FAILURES)/s", $output, $section)) {
+              preg_match_all("/\d+\) (.+?)\n(.+?)(?=\n\n|\n\d+\)|\Z)/s", $section[1], $matches, PREG_SET_ORDER);
+              foreach ($matches as $m) {
+                $skipped[] = ["test" => trim($m[1]), "reason" => trim($m[2])];
+              }
+            }
+
+            $md = "### ⚠️ $label — $skipCount / $total tests skipped\n\n";
             if (count($skipped) > 0) {
-              $md = "### ⚠️ $label — " . count($skipped) . " / $total tests skipped\n\n";
               $md .= "| Test | Reason |\n|------|--------|\n";
               foreach ($skipped as $s) {
                 $md .= "| {$s["test"]} | {$s["reason"]} |\n";
               }
-            } else {
-              $md = "### ✅ $label — All $total tests ran\n";
             }
             file_put_contents($file, $md, FILE_APPEND);
           '
