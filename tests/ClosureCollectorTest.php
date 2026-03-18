@@ -11,6 +11,7 @@ use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\ClosureBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
+use RobertBoes\InertiaBreadcrumbs\Middleware;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 
 class ClosureCollectorTest extends TestCase
@@ -24,7 +25,7 @@ class ClosureCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app): void
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
-        $app->make(\Illuminate\Routing\Router::class)->pushMiddlewareToGroup('custom', \RobertBoes\InertiaBreadcrumbs\Middleware::class);
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
     }
 
     /**

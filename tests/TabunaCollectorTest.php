@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\Middleware;
 use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
@@ -45,7 +46,7 @@ class TabunaCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
-        $app->make(\Illuminate\Routing\Router::class)->pushMiddlewareToGroup('custom', \RobertBoes\InertiaBreadcrumbs\Middleware::class);
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
     }
 
     /**
