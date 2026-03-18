@@ -2,6 +2,7 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -26,7 +27,7 @@ class ClosureCollectorTest extends TestCase
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router): void
     {

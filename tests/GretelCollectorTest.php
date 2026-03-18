@@ -3,11 +3,13 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Glhd\Gretel\Support\GretelServiceProvider;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 
@@ -26,7 +28,7 @@ class GretelCollectorTest extends TestCase
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -46,8 +48,12 @@ class GretelCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance(\RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker::class, new class extends \RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker {
-            public function __invoke(string $class): bool { return false; }
+        $this->app->instance(PackageExistenceChecker::class, new class extends PackageExistenceChecker
+        {
+            public function __invoke(string $class): bool
+            {
+                return false;
+            }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('glhd/gretel is not installed');

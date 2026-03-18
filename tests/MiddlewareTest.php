@@ -41,7 +41,7 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {

@@ -4,6 +4,7 @@ namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
+use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,7 +15,7 @@ use RobertBoes\InertiaBreadcrumbs\Middleware;
 class SerializationTest extends TestCase
 {
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router): void
     {

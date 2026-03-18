@@ -2,12 +2,15 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
+use Illuminate\Routing\Route;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\TabunaBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 use Tabuna\Breadcrumbs\Breadcrumbs as TabunaBreadcrumbs;
@@ -22,7 +25,7 @@ class TabunaCollectorTest extends TestCase
     {
         // Clear Gretel's 'breadcrumbs' macro if it leaked from a previous test class,
         // so Tabuna's service provider can register its own version.
-        \Illuminate\Routing\Route::flushMacros();
+        Route::flushMacros();
 
         parent::setUp();
     }
@@ -43,7 +46,7 @@ class TabunaCollectorTest extends TestCase
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -73,8 +76,12 @@ class TabunaCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance(\RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker::class, new class extends \RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker {
-            public function __invoke(string $class): bool { return false; }
+        $this->app->instance(PackageExistenceChecker::class, new class extends PackageExistenceChecker
+        {
+            public function __invoke(string $class): bool
+            {
+                return false;
+            }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('tabuna/breadcrumbs is not installed');

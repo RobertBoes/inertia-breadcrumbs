@@ -6,12 +6,14 @@ use Diglactic\Breadcrumbs\Breadcrumbs as DiglacticBreadcrumbs;
 use Diglactic\Breadcrumbs\Generator as DiglacticTrail;
 use Diglactic\Breadcrumbs\ServiceProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Models\User;
@@ -36,7 +38,7 @@ class DiglacticCollectorTest extends TestCase
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -72,8 +74,12 @@ class DiglacticCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance(\RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker::class, new class extends \RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker {
-            public function __invoke(string $class): bool { return false; }
+        $this->app->instance(PackageExistenceChecker::class, new class extends PackageExistenceChecker
+        {
+            public function __invoke(string $class): bool
+            {
+                return false;
+            }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('diglactic/laravel-breadcrumbs is not installed');
