@@ -25,6 +25,7 @@ class MiddlewareTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->middlewareGroup('custom', []);
     }
 
     public function usesCustomSharedKey($app)
@@ -275,6 +276,10 @@ class MiddlewareTest extends TestCase
     #[Test]
     public function it_shares_breadcrumbs_with_deferred_strategy()
     {
+        if (! method_exists(Assert::class, 'loadDeferredProps')) {
+            $this->markTestSkipped('loadDeferredProps is not available in this version of Inertia');
+        }
+
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
             Breadcrumb::make('Home', route('home')),
         ]);

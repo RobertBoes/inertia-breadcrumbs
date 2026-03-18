@@ -23,6 +23,8 @@ class TabunaCollectorTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->skipIfCollectorPackageMissing();
+
         // Clear Gretel's 'breadcrumbs' macro if it leaked from a previous test class,
         // so Tabuna's service provider can register its own version.
         Route::flushMacros();
@@ -43,6 +45,7 @@ class TabunaCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(\Illuminate\Routing\Router::class)->middlewareGroup('custom', []);
     }
 
     /**

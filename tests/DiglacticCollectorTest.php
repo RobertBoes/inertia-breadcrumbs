@@ -35,6 +35,7 @@ class DiglacticCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->middlewareGroup('custom', []);
     }
 
     /**

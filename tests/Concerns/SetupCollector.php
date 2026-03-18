@@ -13,6 +13,13 @@ trait SetupCollector
 
     protected function setUp(): void
     {
+        $this->skipIfCollectorPackageMissing();
+
+        parent::setUp();
+    }
+
+    protected function skipIfCollectorPackageMissing(): void
+    {
         $collector = $this->collector();
 
         if (is_subclass_of($collector, AbstractBreadcrumbCollector::class)) {
@@ -20,8 +27,6 @@ trait SetupCollector
                 $this->markTestSkipped("{$collector::packageIdentifier()} is not installed");
             }
         }
-
-        parent::setUp();
     }
 
     protected function getPackageProviders($app)
