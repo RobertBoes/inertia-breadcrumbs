@@ -4,6 +4,16 @@ This document outlines breaking changes introduced in 0.x versions and major rel
 
 We accept PRs to improve this guide.
 
+## From 0.8.x to 1.0.0
+
+### Minimum version requirements
+
+This release drops support for older versions of PHP, Laravel, and Inertia:
+
+- PHP 8.2 or higher is now required (was 8.1)
+- Laravel 12 or higher is now required (was 10)
+- Inertia Laravel 2.0 or higher is now required (was 1.0)
+
 ## From 0.5.x to 0.6.0
 
 ### Breadcrumbs without a route
