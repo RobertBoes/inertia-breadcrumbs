@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\View;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -25,6 +26,10 @@ class TestCase extends Orchestra
     {
         $app->config->set('inertia.testing.ensure_pages_exist', false);
         $app->config->set('database.default', 'testing');
+
+        // Register the 'custom' middleware group used in tests.
+        // Laravel 13 requires middleware groups to be registered before routes reference them.
+        $app->make(Router::class)->middlewareGroup('custom', []);
     }
 
     protected function getPackageProviders($app)
