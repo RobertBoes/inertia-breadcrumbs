@@ -25,6 +25,7 @@ class MiddlewareTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
     }
 
     public function usesCustomSharedKey($app)

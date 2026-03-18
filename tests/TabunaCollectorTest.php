@@ -45,6 +45,7 @@ class TabunaCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(\Illuminate\Routing\Router::class)->pushMiddlewareToGroup('custom', \RobertBoes\InertiaBreadcrumbs\Middleware::class);
     }
 
     /**
