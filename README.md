@@ -31,7 +31,7 @@ Next step is to install one of the following packages to manage your breadcrumbs
 - [glhd/gretel](https://github.com/glhd/gretel)
 - Built-in closure collector (no additional package required)
 
-Configure your breadcrumbs as explained by the package
+Configure your breadcrumbs as explained by the package you've chosen.
 
 Update your `config/inertia-breadcrumbs.php` configuration to use the correct collector:
 ```php
@@ -193,7 +193,7 @@ return [
 A classifier is used to determine when breadcrumbs should be shared as Inertia props.
 By default all breadcrumbs are shared, but this package is shipped with the `IgnoreSingleBreadcrumbs` classifier, which simply discards a breadcrumb collection containing only one route.
 
-To write your own classifier you'll have to implement `RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection\ClassifierContract` and update the `inertia-breadcrumbs.classifier` config, for example:
+To write your own classifier you'll have to implement `RobertBoes\InertiaBreadcrumbs\Classifier\ClassifierContract` and update the `inertia-breadcrumbs.classifier` config, for example:
 
 ```php
 <?php
@@ -208,7 +208,7 @@ class IgnoreAdminBreadcrumbs implements ClassifierContract
 {
     public function shouldShareBreadcrumbs(BreadcrumbCollection $collection): bool
     {
-        return ! Str::startsWith($collection->first()->url(), '/admin')''
+        return ! Str::startsWith($collection->first()->url(), '/admin');
     }
 }
 ```
