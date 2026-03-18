@@ -2,6 +2,7 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests\Concerns;
 
+use RobertBoes\InertiaBreadcrumbs\Collectors\AbstractBreadcrumbCollector;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 
 trait SetupCollector
@@ -9,6 +10,19 @@ trait SetupCollector
     abstract protected function collector(): string;
 
     abstract protected function provider(): string;
+
+    protected function setUp(): void
+    {
+        $collector = $this->collector();
+
+        if (is_subclass_of($collector, AbstractBreadcrumbCollector::class)) {
+            if (! class_exists($collector::requiredClass())) {
+                $this->markTestSkipped("{$collector::packageIdentifier()} is not installed");
+            }
+        }
+
+        parent::setUp();
+    }
 
     protected function getPackageProviders($app)
     {
