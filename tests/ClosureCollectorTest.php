@@ -40,6 +40,14 @@ class ClosureCollectorTest extends TestCase
         $router->get('/users/{user}', function (string $user) {
             return Inertia::render('Users/Show', ['user' => $user]);
         })->name('users.show')->middleware('custom');
+        $router->get('/unnamed', function (InertiaBreadcrumbs $breadcrumbs) {
+            $breadcrumbs->for(fn () => [
+                Breadcrumb::make('Home', '/'),
+                Breadcrumb::make('Unnamed Page', '/unnamed', current: true),
+            ]);
+
+            return Inertia::render('Unnamed');
+        })->middleware('custom');
     }
 
     #[Test]
@@ -230,5 +238,35 @@ class ClosureCollectorTest extends TestCase
 
         $this->assertSame(1, $crumbs->items()->count());
         $this->assertFalse($crumbs->items()->first()->current());
+    }
+
+    #[Test]
+    public function it_stores_pending_breadcrumbs_for_unnamed_routes()
+    {
+        app(InertiaBreadcrumbs::class)->for(fn () => [
+            Breadcrumb::make('Home', '/'),
+            Breadcrumb::make('Page', '/page', current: true),
+        ]);
+
+        $this->assertNotNull(app(InertiaBreadcrumbs::class)->pending());
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    public function it_resolves_pending_breadcrumbs_through_http_pipeline()
+    {
+        $this->getJson('/unnamed')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Unnamed')
+                    ->has(
+                        'breadcrumbs',
+                        2,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', '/')
+                    )
+            );
     }
 }

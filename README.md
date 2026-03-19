@@ -170,7 +170,10 @@ class UserController extends Controller
 }
 ```
 
-Route parameters are automatically passed to the closure based on the current route. The `current` property is automatically determined by comparing the breadcrumb URL with the current request URL.
+Route parameters are automatically passed to the closure based on the current route. The `current` property is automatically determined by comparing the breadcrumb URL with the current request URL, but you can also set it explicitly via `Breadcrumb::make('Title', $url, current: true)`.
+
+> [!NOTE]
+> When using the shorthand (passing a closure as the first argument) on a named route, the route name is automatically inferred from the request. On unnamed routes, the breadcrumbs are stored as pending and resolved for the current request only. The service provider approach always requires an explicit route name.
 
 ## Share strategy
 
@@ -187,6 +190,8 @@ return [
 - `ShareStrategy::Default` — Standard shared prop, excluded during partial reloads unless explicitly requested
 - `ShareStrategy::Always` — Always included in the response, even during partial reloads
 - `ShareStrategy::Deferred` — Excluded from the initial page load, automatically fetched after the page renders
+
+You can also use string values (`'default'`, `'always'`, `'deferred'`) instead of the enum.
 
 ## Using a classifier
 

@@ -19,12 +19,18 @@ class Middleware
     {
         $resolver = fn () => $this->breadcrumbs($request)?->toArray();
 
-        $strategy = config('inertia-breadcrumbs.share', ShareStrategy::Default);
+        $configured = config('inertia-breadcrumbs.share');
+
+        $strategy = match (true) {
+            $configured instanceof ShareStrategy => $configured,
+            is_string($configured) => ShareStrategy::tryFrom($configured) ?? ShareStrategy::Default,
+            default => ShareStrategy::Default,
+        };
 
         $value = match ($strategy) {
             ShareStrategy::Always => Inertia::always($resolver),
             ShareStrategy::Deferred => Inertia::defer($resolver),
-            default => $resolver,
+            ShareStrategy::Default => $resolver,
         };
 
         Inertia::share(

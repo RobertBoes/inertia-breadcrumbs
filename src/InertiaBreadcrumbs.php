@@ -9,6 +9,8 @@ class InertiaBreadcrumbs
     /** @var array<string, \Closure> */
     private array $breadcrumbs = [];
 
+    private ?\Closure $pending = null;
+
     public function serializeUsing(\Closure $callback): void
     {
         $this->serializeUsingCallback = $callback;
@@ -30,13 +32,24 @@ class InertiaBreadcrumbs
         if ($name instanceof \Closure) {
             $callback = $name;
             $name = request()->route()?->getName();
+
+            if ($name === null) {
+                $this->pending = $callback;
+
+                return;
+            }
         }
 
-        if ($name === null || $callback === null) {
+        if ($callback === null) {
             return;
         }
 
         $this->breadcrumbs[$name] = $callback;
+    }
+
+    public function pending(): ?\Closure
+    {
+        return $this->pending;
     }
 
     public function has(string $name): bool

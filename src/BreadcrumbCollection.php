@@ -21,12 +21,12 @@ class BreadcrumbCollection implements Arrayable
     {
         $this->items = Collection::wrap($items)
             ->map(function (mixed $breadcrumb) use ($initializer): Breadcrumb {
-                if ($breadcrumb instanceof Breadcrumb) {
-                    return $breadcrumb;
-                }
-
                 if ($initializer && ($result = $initializer($breadcrumb)) instanceof Breadcrumb) {
                     return $result;
+                }
+
+                if ($breadcrumb instanceof Breadcrumb) {
+                    return $breadcrumb;
                 }
 
                 throw new CannotCreateBreadcrumbException;

@@ -18,25 +18,32 @@ class ClosureBreadcrumbsCollector implements BreadcrumbCollectorContract
             return new BreadcrumbCollection([]);
         }
 
-        $name = $route->getName();
+        $callback = $this->resolveCallback($route);
 
-        if ($name === null || ! $this->breadcrumbs->has($name)) {
+        if ($callback === null) {
             return new BreadcrumbCollection([]);
         }
-
-        $callback = $this->breadcrumbs->get($name);
 
         /** @var array<int, Breadcrumb> $items */
         $items = $callback(...array_values($route->parameters()));
 
-        $items = collect($items)->map(fn (Breadcrumb $breadcrumb) => new Breadcrumb(
+        return new BreadcrumbCollection($items, fn (Breadcrumb $breadcrumb) => new Breadcrumb(
             title: $breadcrumb->title(),
             current: $breadcrumb->current() ?: $this->isCurrentUrl($request, $breadcrumb->url()),
             url: $breadcrumb->url(),
             data: $breadcrumb->data(),
         ));
+    }
 
-        return new BreadcrumbCollection($items);
+    private function resolveCallback(Route $route): ?\Closure
+    {
+        $name = $route->getName();
+
+        if ($name !== null && $this->breadcrumbs->has($name)) {
+            return $this->breadcrumbs->get($name);
+        }
+
+        return $this->breadcrumbs->pending();
     }
 
     private function isCurrentUrl(Request $request, ?string $url): bool

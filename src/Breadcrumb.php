@@ -20,9 +20,9 @@ readonly class Breadcrumb implements Arrayable
     /**
      * @param  ?array<string, mixed>  $data
      */
-    public static function make(string $title, ?string $url = null, ?array $data = null): self
+    public static function make(string $title, ?string $url = null, ?array $data = null, bool $current = false): self
     {
-        return new self(title: $title, url: $url, data: $data);
+        return new self(title: $title, current: $current, url: $url, data: $data);
     }
 
     public function title(): string
