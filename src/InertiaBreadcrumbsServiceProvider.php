@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Routing\Router;
+use Laravel\Octane\Events\RequestReceived;
 use RobertBoes\InertiaBreadcrumbs\Classifier\AppendAllBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Classifier\ClassifierContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
@@ -31,11 +32,11 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
 
     private function clearStateOnOctaneRequest(): void
     {
-        if (! class_exists(\Laravel\Octane\Events\RequestReceived::class)) {
+        if (! class_exists(RequestReceived::class)) {
             return;
         }
 
-        $this->app['events']->listen(\Laravel\Octane\Events\RequestReceived::class, function (): void {
+        $this->app['events']->listen(RequestReceived::class, function (): void {
             $this->app->make(InertiaBreadcrumbs::class)->clearPending();
         });
     }
