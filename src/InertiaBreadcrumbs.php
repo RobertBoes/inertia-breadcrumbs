@@ -52,6 +52,11 @@ class InertiaBreadcrumbs
         return $this->pending;
     }
 
+    public function clearPending(): void
+    {
+        $this->pending = null;
+    }
+
     public function has(string $name): bool
     {
         return isset($this->breadcrumbs[$name]);

@@ -25,6 +25,19 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
         $this->app->singleton(PackageExistenceChecker::class);
         $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', DiglacticBreadcrumbsCollector::class));
         $this->app->bind(ClassifierContract::class, config('inertia-breadcrumbs.classifier', AppendAllBreadcrumbs::class));
+
+        $this->clearStateOnOctaneRequest();
+    }
+
+    private function clearStateOnOctaneRequest(): void
+    {
+        if (! class_exists(\Laravel\Octane\Events\RequestReceived::class)) {
+            return;
+        }
+
+        $this->app['events']->listen(\Laravel\Octane\Events\RequestReceived::class, function (): void {
+            $this->app->make(InertiaBreadcrumbs::class)->clearPending();
+        });
     }
 
     public function packageBooted(): void
