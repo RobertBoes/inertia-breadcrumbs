@@ -41,6 +41,11 @@ class BreadcrumbCollection implements Arrayable
         return $this->items->values();
     }
 
+    public function first(): ?Breadcrumb
+    {
+        return $this->items->first();
+    }
+
     public function toArray(): array
     {
         return $this->items->toArray();
