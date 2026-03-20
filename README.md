@@ -213,7 +213,7 @@ class IgnoreAdminBreadcrumbs implements ClassifierContract
 {
     public function shouldShareBreadcrumbs(BreadcrumbCollection $collection): bool
     {
-        return ! Str::startsWith($collection->first()->url(), '/admin');
+        return ! Str::startsWith($collection->first()?->url(), '/admin');
     }
 }
 ```
