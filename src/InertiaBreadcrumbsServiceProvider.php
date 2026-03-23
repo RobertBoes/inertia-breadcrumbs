@@ -3,6 +3,7 @@
 namespace RobertBoes\InertiaBreadcrumbs;
 
 use Illuminate\Routing\Router;
+use Laravel\Octane\Events\RequestReceived;
 use RobertBoes\InertiaBreadcrumbs\Classifier\AppendAllBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Classifier\ClassifierContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
@@ -21,10 +22,22 @@ class InertiaBreadcrumbsServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        $this->app->singleton(InertiaBreadcrumbs::class);
+        $this->app->singleton(PackageExistenceChecker::class);
         $this->app->bind(BreadcrumbCollectorContract::class, config('inertia-breadcrumbs.collector', DiglacticBreadcrumbsCollector::class));
         $this->app->bind(ClassifierContract::class, config('inertia-breadcrumbs.classifier', AppendAllBreadcrumbs::class));
-        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
-            return class_exists($class);
+
+        $this->clearStateOnOctaneRequest();
+    }
+
+    private function clearStateOnOctaneRequest(): void
+    {
+        if (! class_exists(RequestReceived::class)) {
+            return;
+        }
+
+        $this->app['events']->listen(RequestReceived::class, function (): void {
+            $this->app->make(InertiaBreadcrumbs::class)->clearPending();
         });
     }
 

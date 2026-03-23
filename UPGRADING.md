@@ -4,6 +4,72 @@ This document outlines breaking changes introduced in 0.x versions and major rel
 
 We accept PRs to improve this guide.
 
+## From 0.8.x to 1.0.0
+
+### Minimum version requirements
+
+This release drops support for older versions of PHP, Laravel, and Inertia:
+
+- PHP 8.2 or higher is now required (was 8.1)
+- Laravel 12 or higher is now required (was 10)
+- Inertia Laravel 2.0 or higher is now required (was 1.0)
+
+### Breadcrumbs prop is always present
+
+Previously, the `breadcrumbs` prop was only shared with Inertia when breadcrumbs were defined for the current route.
+Starting with 1.0, the `breadcrumbs` prop is always present in the Inertia response. When no breadcrumbs are defined for the current route, the value will be `null`.
+
+If your frontend checks for the existence of the `breadcrumbs` prop, you should update it to check for a `null` value instead:
+
+```diff
+- <nav v-if="'breadcrumbs' in $page.props">
++ <nav v-if="$page.props.breadcrumbs">
+```
+
+### Custom serialization API change
+
+`InertiaBreadcrumbs` is no longer a static class. It's now registered as a singleton in the container.
+If you're using `serializeUsing`, update your code:
+
+```diff
+- use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
+-
+- InertiaBreadcrumbs::serializeUsing(fn (Breadcrumb $breadcrumb) => [...]);
++ use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
++ use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
++
++ app(InertiaBreadcrumbs::class)->serializeUsing(fn (Breadcrumb $breadcrumb) => [...]);
+```
+
+### Share strategy configuration
+
+A new `share` configuration option has been added to control how breadcrumbs are shared with Inertia.
+It's recommended to add this to your config:
+
+```diff
+return [
+    'middleware' => [
+        // ...
+    ],
+
++    /**
++     * Controls how breadcrumbs are shared with Inertia.
++     */
++    'share' => \RobertBoes\InertiaBreadcrumbs\ShareStrategy::Default,
++
+    'collector' => DiglacticBreadcrumbsCollector::class,
+    // ...
+];
+```
+
+See the [README](README.md#share-strategy) for the available strategies.
+
+### New built-in closure collector
+
+If you don't want to use a third-party breadcrumb package, you can now use the built-in `ClosureBreadcrumbsCollector`.
+This allows you to define breadcrumbs directly using closures, without installing any additional packages.
+See the [README](README.md#using-the-closure-collector) for usage details.
+
 ## From 0.5.x to 0.6.0
 
 ### Breadcrumbs without a route

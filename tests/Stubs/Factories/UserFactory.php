@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {

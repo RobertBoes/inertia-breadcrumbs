@@ -6,12 +6,16 @@ use Diglactic\Breadcrumbs\Breadcrumbs as DiglacticBreadcrumbs;
 use Diglactic\Breadcrumbs\Generator as DiglacticTrail;
 use Diglactic\Breadcrumbs\ServiceProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
 use Inertia\Testing\AssertableInertia as Assert;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\DiglacticBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\Middleware;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Models\User;
@@ -33,10 +37,11 @@ class DiglacticCollectorTest extends TestCase
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
     }
 
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -72,8 +77,12 @@ class DiglacticCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
-            return false;
+        $this->app->instance(PackageExistenceChecker::class, new class extends PackageExistenceChecker
+        {
+            public function __invoke(string $class): bool
+            {
+                return false;
+            }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('diglactic/laravel-breadcrumbs is not installed');
@@ -134,10 +143,8 @@ class DiglacticCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_resolves_a_single_route_parameter()
     {
         $user = User::factory()->create();
@@ -176,10 +183,8 @@ class DiglacticCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         $user = User::factory()->create();
@@ -202,10 +207,8 @@ class DiglacticCollectorTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);

@@ -4,15 +4,66 @@ namespace RobertBoes\InertiaBreadcrumbs;
 
 class InertiaBreadcrumbs
 {
-    /**
-     * The callback that is responsible serializing breadcrumbs to the frontend
-     *
-     * @var callable|null
-     */
-    public static $serializeUsingCallback;
+    private ?\Closure $serializeUsingCallback = null;
 
-    public static function serializeUsing(callable $callback): void
+    /** @var array<string, \Closure> */
+    private array $breadcrumbs = [];
+
+    private ?\Closure $pending = null;
+
+    public function serializeUsing(\Closure $callback): void
     {
-        static::$serializeUsingCallback = $callback;
+        $this->serializeUsingCallback = $callback;
+    }
+
+    public function hasCustomSerializer(): bool
+    {
+        return $this->serializeUsingCallback !== null;
+    }
+
+    /** @return array<string, mixed> */
+    public function serialize(Breadcrumb $breadcrumb): array
+    {
+        return ($this->serializeUsingCallback)($breadcrumb);
+    }
+
+    public function for(string|\Closure $name, ?\Closure $callback = null): void
+    {
+        if ($name instanceof \Closure) {
+            $callback = $name;
+            $name = request()->route()?->getName();
+
+            if ($name === null) {
+                $this->pending = $callback;
+
+                return;
+            }
+        }
+
+        if ($callback === null) {
+            return;
+        }
+
+        $this->breadcrumbs[$name] = $callback;
+    }
+
+    public function pending(): ?\Closure
+    {
+        return $this->pending;
+    }
+
+    public function clearPending(): void
+    {
+        $this->pending = null;
+    }
+
+    public function has(string $name): bool
+    {
+        return isset($this->breadcrumbs[$name]);
+    }
+
+    public function get(string $name): ?\Closure
+    {
+        return $this->breadcrumbs[$name] ?? null;
     }
 }

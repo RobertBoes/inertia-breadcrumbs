@@ -3,11 +3,15 @@
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
 use Glhd\Gretel\Support\GretelServiceProvider;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Config;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
 use RobertBoes\InertiaBreadcrumbs\Collectors\GretelBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\Middleware;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Concerns\SetupCollector;
 use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 
@@ -25,8 +29,14 @@ class GretelCollectorTest extends TestCase
         return GretelServiceProvider::class;
     }
 
+    public function usesCustomMiddlewareGroup($app)
+    {
+        $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
+    }
+
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -46,8 +56,12 @@ class GretelCollectorTest extends TestCase
     #[Test]
     public function it_throws_an_exception_when_package_is_not_installed()
     {
-        $this->app->instance('inertia-breadcrumbs-package-existence', function (string $class): bool {
-            return false;
+        $this->app->instance(PackageExistenceChecker::class, new class extends PackageExistenceChecker
+        {
+            public function __invoke(string $class): bool
+            {
+                return false;
+            }
         });
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('glhd/gretel is not installed');
@@ -93,10 +107,8 @@ class GretelCollectorTest extends TestCase
         $this->assertTrue($crumbs->items()->isEmpty());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_ignores_the_query_string_by_default_when_determining_current_route()
     {
         $request = RequestBuilder::create('profile.edit', ['foo' => 'bar']);
@@ -116,10 +128,8 @@ class GretelCollectorTest extends TestCase
         ], $crumbs->toArray());
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_does_not_ignore_query_parameters_when_configured_to_do_so_when_determining_current_route()
     {
         Config::set('inertia-breadcrumbs.ignore_query', false);

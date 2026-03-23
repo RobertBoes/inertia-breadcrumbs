@@ -2,19 +2,26 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
+use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
+use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
+use RobertBoes\InertiaBreadcrumbs\Collectors\ClosureBreadcrumbsCollector;
 use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Middleware;
 
 class SerializationTest extends TestCase
 {
+    protected function defineEnvironment($app): void
+    {
+        parent::defineEnvironment($app);
+        $app->bind(BreadcrumbCollectorContract::class, ClosureBreadcrumbsCollector::class);
+    }
+
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router): void
     {
@@ -26,9 +33,9 @@ class SerializationTest extends TestCase
     #[Test]
     public function it_serializes_breadcrumbs(): void
     {
-        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'));
-        });
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
 
         $this->getJson('/home')
             ->assertOk()
@@ -50,11 +57,11 @@ class SerializationTest extends TestCase
     #[Test]
     public function it_can_use_a_custom_serializer(): void
     {
-        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'));
-        });
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
 
-        InertiaBreadcrumbs::serializeUsing(fn (Breadcrumb $breadcrumb) => [
+        app(InertiaBreadcrumbs::class)->serializeUsing(fn (Breadcrumb $breadcrumb) => [
             'name' => $breadcrumb->title(),
             'href' => $breadcrumb->url(),
             'active' => $breadcrumb->current(),
@@ -73,7 +80,7 @@ class SerializationTest extends TestCase
                             ->where('name', 'Home')
                             ->where('href', route('home'))
                             ->where('active', true)
-                            ->where('data', [])
+                            ->where('data', null)
                     )
             );
     }

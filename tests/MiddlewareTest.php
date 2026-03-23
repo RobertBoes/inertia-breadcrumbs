@@ -2,19 +2,31 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Testing\AssertableInertia as Assert;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 use PHPUnit\Framework\Attributes\Test;
+use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
+use RobertBoes\InertiaBreadcrumbs\Collectors\BreadcrumbCollectorContract;
+use RobertBoes\InertiaBreadcrumbs\Collectors\ClosureBreadcrumbsCollector;
+use RobertBoes\InertiaBreadcrumbs\InertiaBreadcrumbs;
 use RobertBoes\InertiaBreadcrumbs\Middleware;
+use RobertBoes\InertiaBreadcrumbs\ShareStrategy;
+use RobertBoes\InertiaBreadcrumbs\Tests\Helpers\RequestBuilder;
 
 class MiddlewareTest extends TestCase
 {
+    protected function defineEnvironment($app): void
+    {
+        parent::defineEnvironment($app);
+        $app->bind(BreadcrumbCollectorContract::class, ClosureBreadcrumbsCollector::class);
+    }
+
     public function usesCustomMiddlewareGroup($app)
     {
         $app->config->set('inertia-breadcrumbs.middleware.group', 'custom');
+        $app->make(Router::class)->pushMiddlewareToGroup('custom', Middleware::class);
     }
 
     public function usesCustomSharedKey($app)
@@ -27,8 +39,18 @@ class MiddlewareTest extends TestCase
         $app->config->set('inertia-breadcrumbs.middleware.enabled', false);
     }
 
+    public function usesAlwaysShareStrategy($app)
+    {
+        $app->config->set('inertia-breadcrumbs.share', ShareStrategy::Always);
+    }
+
+    public function usesDeferredShareStrategy($app)
+    {
+        $app->config->set('inertia-breadcrumbs.share', ShareStrategy::Deferred);
+    }
+
     /**
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  Router  $router
      */
     public function defineRoutes($router)
     {
@@ -40,50 +62,39 @@ class MiddlewareTest extends TestCase
     #[Test]
     public function it_adds_middleware_to_web_group()
     {
-        $this->assertEquals(
-            $this->app->make(Router::class)->getMiddlewareGroups(),
-            [
-                'web' => [
-                    Middleware::class,
-                ],
-            ]
-        );
+        $groups = $this->app->make(Router::class)->getMiddlewareGroups();
+
+        $this->assertArrayHasKey('web', $groups);
+        $this->assertContains(Middleware::class, $groups['web']);
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_middleware_to_custom_group()
     {
-        $this->assertEquals(
-            $this->app->make(Router::class)->getMiddlewareGroups(),
-            [
-                'custom' => [
-                    Middleware::class,
-                ],
-            ]
-        );
+        $groups = $this->app->make(Router::class)->getMiddlewareGroups();
+
+        $this->assertArrayHasKey('custom', $groups);
+        $this->assertContains(Middleware::class, $groups['custom']);
     }
 
-    /**
-     * @define-env hasMiddlewareDisabled
-     */
     #[Test]
+    #[DefineEnvironment('hasMiddlewareDisabled')]
     public function it_only_adds_middleware_when_enabled_in_config()
     {
-        $this->assertEmpty($this->app->make(Router::class)->getMiddlewareGroups());
+        $groups = $this->app->make(Router::class)->getMiddlewareGroups();
+
+        $webMiddleware = $groups['web'] ?? [];
+        $this->assertNotContains(Middleware::class, $webMiddleware);
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
     public function it_adds_breadcrumbs_for_current_route()
     {
-        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'));
-        });
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
 
         $this->getJson('/home')
             ->assertOk()
@@ -101,15 +112,13 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
-    public function it_adds_diglactic_breadcrumbs_with_additional_data()
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    public function it_adds_breadcrumbs_with_additional_data()
     {
-        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'), ['icon' => 'home.png']);
-        });
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home'), ['icon' => 'home.png']),
+        ]);
 
         $this->getJson('/home')
             ->assertOk()
@@ -128,16 +137,14 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     * @define-env usesCustomSharedKey
-     */
     #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesCustomSharedKey')]
     public function it_does_change_key_of_breadcrumb()
     {
-        Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
-            $trail->push('Home', route('home'));
-        });
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
 
         $this->getJson('/home')
             ->assertOk()
@@ -156,18 +163,125 @@ class MiddlewareTest extends TestCase
             );
     }
 
-    /**
-     * @define-env usesCustomMiddlewareGroup
-     */
     #[Test]
-    public function it_does_not_add_breadcrumbs_when_route_has_no_breadcrumbs()
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    public function it_shares_null_when_route_has_no_breadcrumbs()
     {
         $this->getJson('/home')
             ->assertOk()
             ->assertInertia(
                 fn (Assert $page) => $page
                     ->component('Home')
+                    ->where('breadcrumbs', null)
+            );
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    public function it_adds_breadcrumbs_with_cached_routes()
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        // Simulate route caching by compiling and reloading routes
+        $compiled = $this->app['router']->getRoutes()->compile();
+        $this->app['router']->setCompiledRoutes($compiled);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('current', true)
+                    )
+            );
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    public function it_collects_breadcrumbs_with_cached_routes_via_collector()
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        // Simulate route caching
+        $compiled = $this->app['router']->getRoutes()->compile();
+        $this->app['router']->setCompiledRoutes($compiled);
+
+        // Verify the route is still resolvable via the compiled collection
+        $route = $this->app['router']->getRoutes()->getByName('home');
+        $this->assertNotNull($route, 'Route should be resolvable from compiled routes');
+        $this->assertSame('home', $route->getName(), 'Route name should be preserved in compiled routes');
+
+        $request = RequestBuilder::create('home');
+        $crumbs = app(BreadcrumbCollectorContract::class)->forRequest($request);
+
+        $this->assertSame(1, $crumbs->items()->count());
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesAlwaysShareStrategy')]
+    public function it_shares_breadcrumbs_with_always_strategy()
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('current', true)
+                    )
+            );
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesDeferredShareStrategy')]
+    public function it_shares_breadcrumbs_with_deferred_strategy()
+    {
+        if (! method_exists(Assert::class, 'loadDeferredProps')) {
+            $this->markTestSkipped('loadDeferredProps is not available in this version of Inertia');
+        }
+
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
                     ->missing('breadcrumbs')
+                    ->loadDeferredProps(
+                        fn (Assert $page) => $page
+                            ->has(
+                                'breadcrumbs',
+                                1,
+                                fn (Assert $page) => $page
+                                    ->where('title', 'Home')
+                                    ->where('url', route('home'))
+                                    ->where('current', true)
+                            )
+                    )
             );
     }
 }

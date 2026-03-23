@@ -14,31 +14,22 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.1, 8.2, 8.3]
-        inertia: [^1.0, ^2.0]
-        laravel: [10.*, 11.*, 12.*]
+        php: [8.2, 8.3, 8.4]
+        inertia: [^2.0, ^3.0@beta]
+        laravel: [12.*, 13.*]
         stability: [prefer-lowest, prefer-stable]
         include:
-          - laravel: 10.*
-            testbench: ^8
-            larastan: ^2
-            phpunit-config: phpunit.10.xml.dist
-          - laravel: 11.*
-            testbench: ^9.1.0
-            larastan: ^2
-            phpunit-config: phpunit.xml.dist
           - laravel: 12.*
             testbench: ^10
             larastan: ^3
             phpunit-config: phpunit.xml.dist
+          - laravel: 13.*
+            testbench: ^11
+            larastan: ^3
+            phpunit-config: phpunit.xml.dist
         exclude:
-          - laravel: 11.*
-            php: 8.1
-          - laravel: 12.*
-            php: 8.1
-          # Inertia 1.x support for Laravel 12 hasn't landed yet, can probably be removed if 1.4.0 is released
-          - inertia: ^1.0
-            laravel: 12.*
+          - laravel: 13.*
+            php: 8.2
 
     name: PHP${{ matrix.php }} - L${{ matrix.laravel }} - Inertia ${{ matrix.inertia }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -61,7 +52,54 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "larastan/larastan:${{ matrix.larastan }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction || (
+            echo "Dependency resolution failed, removing incompatible packages..."
+            composer remove diglactic/laravel-breadcrumbs --dev --no-interaction --no-update 2>/dev/null || true
+            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          )
 
       - name: Execute tests
-        run: vendor/bin/phpunit --no-coverage --configuration ${{ matrix.phpunit-config }}
+        id: tests
+        run: |
+          mkdir -p build
+          vendor/bin/phpunit --no-coverage --configuration ${{ matrix.phpunit-config }} --display-skipped 2>&1 | tee build/test-output.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Report skipped tests
+        if: always() && steps.tests.outcome != 'cancelled'
+        env:
+          MATRIX_LABEL: PHP${{ matrix.php }} - L${{ matrix.laravel }} - Inertia ${{ matrix.inertia }} - ${{ matrix.stability }}
+        run: |
+          if [ ! -f build/test-output.txt ]; then exit 0; fi
+          php -r '
+            $output = file_get_contents("build/test-output.txt");
+            $label = getenv("MATRIX_LABEL");
+            $file = getenv("GITHUB_STEP_SUMMARY");
+
+            preg_match("/Tests: (\d+)/", $output, $totalMatch);
+            preg_match("/Skipped: (\d+)/", $output, $skipMatch);
+            $total = $totalMatch[1] ?? 0;
+            $skipCount = $skipMatch[1] ?? 0;
+
+            if ($skipCount == 0) {
+              file_put_contents($file, "### ✅ $label — All $total tests ran\n", FILE_APPEND);
+              exit(0);
+            }
+
+            $skipped = [];
+            if (preg_match("/skipped tests?:\s*\n(.*?)(?=\nOK|FAILURES)/s", $output, $section)) {
+              preg_match_all("/\d+\) (.+?)\n(.+?)(?=\n\n|\n\d+\)|\Z)/s", $section[1], $matches, PREG_SET_ORDER);
+              foreach ($matches as $m) {
+                $skipped[] = ["test" => trim($m[1]), "reason" => trim($m[2])];
+              }
+            }
+
+            $md = "### ⚠️ $label — $skipCount / $total tests skipped\n\n";
+            if (count($skipped) > 0) {
+              $md .= "| Test | Reason |\n|------|--------|\n";
+              foreach ($skipped as $s) {
+                $md .= "| {$s["test"]} | {$s["reason"]} |\n";
+              }
+            }
+            file_put_contents($file, $md, FILE_APPEND);
+          '

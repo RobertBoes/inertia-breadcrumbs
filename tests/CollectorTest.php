@@ -7,6 +7,7 @@ use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\CannotCreateBreadcrumbException;
 use RobertBoes\InertiaBreadcrumbs\Exceptions\PackageNotInstalledException;
+use RobertBoes\InertiaBreadcrumbs\PackageExistenceChecker;
 use RobertBoes\InertiaBreadcrumbs\Tests\Stubs\Classes\InvalidDummyCollector;
 use stdClass;
 
@@ -18,7 +19,7 @@ class CollectorTest extends TestCase
         $this->expectException(PackageNotInstalledException::class);
         $this->expectExceptionMessage('dummy/breadcrumbs is not installed');
 
-        new InvalidDummyCollector;
+        new InvalidDummyCollector(app(PackageExistenceChecker::class));
     }
 
     #[Test]

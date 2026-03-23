@@ -15,17 +15,27 @@ class Middleware
         private readonly ClassifierContract $classifier
     ) {}
 
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
-        $breadcrumbs = $this->breadcrumbs($request);
+        $resolver = fn () => $this->breadcrumbs($request)?->toArray();
 
-        if (is_null($breadcrumbs)) {
-            return $next($request);
-        }
+        $configured = config('inertia-breadcrumbs.share');
+
+        $strategy = match (true) {
+            $configured instanceof ShareStrategy => $configured,
+            is_string($configured) => ShareStrategy::tryFrom($configured) ?? ShareStrategy::Default,
+            default => ShareStrategy::Default,
+        };
+
+        $value = match ($strategy) {
+            ShareStrategy::Always => Inertia::always($resolver),
+            ShareStrategy::Deferred => Inertia::defer($resolver),
+            ShareStrategy::Default => $resolver,
+        };
 
         Inertia::share(
             key: config('inertia-breadcrumbs.middleware.key', 'breadcrumbs'),
-            value: $breadcrumbs,
+            value: $value,
         );
 
         return $next($request);

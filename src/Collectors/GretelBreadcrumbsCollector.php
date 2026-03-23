@@ -26,6 +26,7 @@ class GretelBreadcrumbsCollector extends AbstractBreadcrumbCollector
         });
     }
 
+    /** @return Collection<int, GretelBreadcrumb> */
     private function getBreadcrumbs(Request $request): Collection
     {
         if (! ($route = $request->route()) instanceof Route) {
