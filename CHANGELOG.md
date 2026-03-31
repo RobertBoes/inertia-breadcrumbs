@@ -2,6 +2,15 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v1.0.0 - 2026-03-31
+
+### What's Changed
+
+* [1.x] Bump dependencies, upgrade phpstan, share strategy, closure collector by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/28
+* feat: update dependencies to support Laravel 13 by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/29
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/0.8.0...1.0.0
+
 ## v0.8.0 - 2025-04-08
 
 ### What's Changed
