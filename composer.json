@@ -36,7 +36,7 @@
         "phpunit/phpunit": "^11.0",
         "spatie/laravel-ray": "^1.28",
         "spatie/ray": "^1.33",
-        "tabuna/breadcrumbs": "^4.0"
+        "tabuna/breadcrumbs": "^4.0|^5.0"
     },
     "suggest": {
         "diglactic/laravel-breadcrumbs": "Manage and configure breadcrumbs with diglactic/laravel-breadcrumbs",

@@ -52,11 +52,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "larastan/larastan:${{ matrix.larastan }}" "inertiajs/inertia-laravel:${{ matrix.inertia }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction || (
-            echo "Dependency resolution failed, removing incompatible packages..."
-            composer remove diglactic/laravel-breadcrumbs --dev --no-interaction --no-update 2>/dev/null || true
-            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-          )
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
         id: tests
