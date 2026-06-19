@@ -49,6 +49,16 @@ class MiddlewareTest extends TestCase
         $app->config->set('inertia-breadcrumbs.share', ShareStrategy::Deferred);
     }
 
+    public function usesAlwaysShareStrategyAsString($app)
+    {
+        $app->config->set('inertia-breadcrumbs.share', 'always');
+    }
+
+    public function usesInvalidShareStrategyString($app)
+    {
+        $app->config->set('inertia-breadcrumbs.share', 'not-a-strategy');
+    }
+
     /**
      * @param  Router  $router
      */
@@ -281,6 +291,56 @@ class MiddlewareTest extends TestCase
                                     ->where('url', route('home'))
                                     ->where('current', true)
                             )
+                    )
+            );
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesAlwaysShareStrategyAsString')]
+    public function it_accepts_share_strategy_as_string(): void
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('current', true)
+                    )
+            );
+    }
+
+    #[Test]
+    #[DefineEnvironment('usesCustomMiddlewareGroup')]
+    #[DefineEnvironment('usesInvalidShareStrategyString')]
+    public function it_falls_back_to_default_strategy_for_unknown_strings(): void
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('Home', route('home')),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'Home')
+                            ->where('url', route('home'))
+                            ->where('current', true)
                     )
             );
     }
