@@ -2,6 +2,7 @@
 
 namespace RobertBoes\InertiaBreadcrumbs\Tests;
 
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\Attributes\Test;
 use RobertBoes\InertiaBreadcrumbs\Breadcrumb;
 use RobertBoes\InertiaBreadcrumbs\BreadcrumbCollection;
@@ -66,5 +67,18 @@ class CollectorTest extends TestCase
         ], function ($crumb): stdClass {
             return (object) $crumb;
         });
+    }
+
+    #[Test]
+    public function it_reindexes_breadcrumbs_when_serializing(): void
+    {
+        $collection = new BreadcrumbCollection(
+            Collection::make([1 => new Breadcrumb('A'), 3 => new Breadcrumb('B')])
+        );
+
+        $array = $collection->toArray();
+
+        $this->assertTrue(array_is_list($array));
+        $this->assertStringStartsWith('[', json_encode($array));
     }
 }

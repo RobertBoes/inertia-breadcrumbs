@@ -55,6 +55,54 @@ class SerializationTest extends TestCase
     }
 
     #[Test]
+    public function it_keeps_falsy_string_titles(): void
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('0', route('home')),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', '0')
+                            ->where('url', route('home'))
+                            ->where('current', true)
+                            ->missing('data')
+                    )
+            );
+    }
+
+    #[Test]
+    public function it_omits_false_current_and_null_url(): void
+    {
+        app(InertiaBreadcrumbs::class)->for('home', fn () => [
+            Breadcrumb::make('No url'),
+        ]);
+
+        $this->getJson('/home')
+            ->assertOk()
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('Home')
+                    ->has(
+                        'breadcrumbs',
+                        1,
+                        fn (Assert $page) => $page
+                            ->where('title', 'No url')
+                            ->missing('url')
+                            ->missing('current')
+                            ->missing('data')
+                    )
+            );
+    }
+
+    #[Test]
     public function it_can_use_a_custom_serializer(): void
     {
         app(InertiaBreadcrumbs::class)->for('home', fn () => [
