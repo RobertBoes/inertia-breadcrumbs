@@ -2,6 +2,18 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v1.1.0 - 2026-06-19
+
+### What's Changed
+
+* ci: update deprecated action versions, run phpstan on PRs by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/34
+* test: cover Octane pending cleanup and string share strategy by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/32
+* docs: fix classifier example comparing absolute URL to a path by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/30
+* fix: make PackageNotInstalledException actionable by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/33
+* fix: preserve falsy titles and reindex breadcrumb serialization by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/31
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/1.0.0...1.1.0
+
 ## v1.0.0 - 2026-03-31
 
 ### What's Changed
