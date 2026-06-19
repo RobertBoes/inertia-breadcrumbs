@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-breadcrumbs` will be documented in this file.
 
+## v1.2.0 - 2026-06-19
+
+### What's Changed
+
+* feat: add Laravel Boost AI guideline and skill by @RobertBoes in https://github.com/RobertBoes/inertia-breadcrumbs/pull/35
+
+**Full Changelog**: https://github.com/RobertBoes/inertia-breadcrumbs/compare/1.1.0...1.2.0
+
 ## v1.1.0 - 2026-06-19
 
 ### What's Changed
