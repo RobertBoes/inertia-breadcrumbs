@@ -48,6 +48,6 @@ class BreadcrumbCollection implements Arrayable
 
     public function toArray(): array
     {
-        return $this->items->toArray();
+        return $this->items->values()->toArray();
     }
 }

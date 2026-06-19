@@ -59,6 +59,6 @@ readonly class Breadcrumb implements Arrayable
             'url' => $this->url(),
             'current' => $this->current(),
             'data' => $this->data(),
-        ]);
+        ], fn (mixed $value): bool => $value !== null && $value !== false && $value !== []);
     }
 }
