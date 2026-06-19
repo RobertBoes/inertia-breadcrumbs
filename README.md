@@ -31,6 +31,9 @@ Next step is to install one of the following packages to manage your breadcrumbs
 - [glhd/gretel](https://github.com/glhd/gretel)
 - Built-in closure collector (no additional package required)
 
+> [!NOTE]
+> Until you install one of these packages or configure a different collector, requests through the `web` middleware group will throw `PackageNotInstalledException`, because the default collector requires `diglactic/laravel-breadcrumbs`.
+
 Configure your breadcrumbs as explained by the package you've chosen.
 
 Update your `config/inertia-breadcrumbs.php` configuration to use the correct collector:

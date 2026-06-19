@@ -23,6 +23,15 @@ class CollectorTest extends TestCase
     }
 
     #[Test]
+    public function it_includes_collector_class_in_exception_message()
+    {
+        $this->expectException(PackageNotInstalledException::class);
+        $this->expectExceptionMessageMatches('/InvalidDummyCollector/');
+
+        new InvalidDummyCollector(app(PackageExistenceChecker::class));
+    }
+
+    #[Test]
     public function it_creates_breadcrumb_collection_from_breadcrumbs()
     {
         $breadcrumbs = new BreadcrumbCollection([

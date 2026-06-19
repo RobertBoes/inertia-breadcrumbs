@@ -11,7 +11,7 @@ abstract class AbstractBreadcrumbCollector implements BreadcrumbCollectorContrac
     public function __construct(private readonly PackageExistenceChecker $packageChecker)
     {
         if (! ($this->packageChecker)(static::requiredClass())) {
-            throw new PackageNotInstalledException(static::packageIdentifier());
+            throw new PackageNotInstalledException(static::packageIdentifier(), static::class);
         }
     }
 
