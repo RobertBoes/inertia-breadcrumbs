@@ -14,8 +14,8 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.2, 8.3, 8.4]
-        inertia: [^2.0, ^3.0@beta]
+        php: [8.2, 8.3, 8.4, 8.5]
+        inertia: [^2.0, ^3.0]
         laravel: [12.*, 13.*]
         stability: [prefer-lowest, prefer-stable]
         include:
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
